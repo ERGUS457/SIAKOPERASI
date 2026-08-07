@@ -1,0 +1,313 @@
+// ============================================================
+// Prisma Schema — Sistem Informasi Akuntansi Koperasi
+// Database: PostgreSQL (Neon)
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+/// Kategori akun untuk klasifikasi Chart of Accounts
+enum KategoriAkun {
+  ASET_LANCAR
+  ASET_TETAP
+  KEWAJIBAN_JANGKA_PENDEK
+  KEWAJIBAN_JANGKA_PANJANG
+  MODAL
+  PENDAPATAN
+  BEBAN
+}
+
+/// Saldo normal akun: menentukan apakah akun bertambah di sisi debit atau kredit
+enum SaldoNormal {
+  DEBIT
+  KREDIT
+}
+
+/// Posisi entry dalam jurnal (debit atau kredit)
+enum PosisiJurnal {
+  DEBIT
+  KREDIT
+}
+
+/// Tipe jurnal transaksi
+enum JenisJurnal {
+  PEMBELIAN_KREDIT
+  PENJUALAN
+  PENERIMAAN_KAS
+  PENGELUARAN_KAS
+  UMUM
+}
+
+/// Jenis pinjaman koperasi
+enum JenisPinjaman {
+  PINJAMAN_REGULER
+  PINJAMAN_KHUSUS
+  PINJAMAN_DARURAT
+}
+
+// ============================================================
+// MODEL: ORGANISASI & USER (Multi-tenant)
+// ============================================================
+
+/// Organisasi/Koperasi — setiap koperasi yang registrasi akan menjadi tenant terpisah
+model Organisasi {
+  id        String   @id @default(cuid())
+  nama      String   // Nama koperasi/instansi
+  alamat    String?
+  telepon   String?
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi: Satu organisasi memiliki banyak user, data, dll.
+  users          User[]
+  pengurus       Pengurus[]
+  anggota        Anggota[]
+  tokoPembelian  TokoPembelian[]
+  tokoPenjualan  TokoPenjualan[]
+  akun           Akun[]
+  transaksi      Transaksi[]
+}
+
+/// User — admin/pengguna yang terdaftar di suatu organisasi
+model User {
+  id           String     @id @default(cuid())
+  username     String
+  email        String     @unique
+  password     String     // Hashed with bcryptjs
+  nama         String
+  organisasiId String
+  organisasi   Organisasi @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([organisasiId])
+}
+
+// ============================================================
+// MODEL: DATA ORGANISASI
+// ============================================================
+
+/// Pengurus — data pengurus koperasi
+model Pengurus {
+  id           String     @id @default(cuid())
+  nama         String
+  jabatan      String
+  alamat       String?
+  telepon      String?
+  email        String?
+  organisasiId String
+  organisasi   Organisasi @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([organisasiId])
+}
+
+/// Anggota — data anggota koperasi
+model Anggota {
+  id             String     @id @default(cuid())
+  nomorAnggota   String     // Nomor anggota unik per organisasi
+  nama           String
+  alamat         String?
+  telepon        String?
+  email          String?
+  tanggalDaftar  DateTime   @default(now())
+  organisasiId   String
+  organisasi     Organisasi @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
+
+  // Relasi: Anggota memiliki satu simpanan dan banyak pinjaman
+  simpanan       Simpanan?
+  pinjaman       Pinjaman[]
+
+  // Relasi: Anggota bisa menjadi sumber transaksi
+  transaksi      Transaksi[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([nomorAnggota, organisasiId])
+  @@index([organisasiId])
+}
+
+/// Toko Pembelian — supplier/toko tempat membeli barang
+model TokoPembelian {
+  id           String     @id @default(cuid())
+  namaToko     String
+  alamat       String?
+  pemilikToko  String?
+  kontak       String?
+  organisasiId String
+  organisasi   Organisasi @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
+
+  // Relasi: Toko bisa menjadi sumber transaksi pembelian
+  transaksi    Transaksi[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organisasiId])
+}
+
+/// Toko Penjualan — customer/toko tempat menjual barang
+model TokoPenjualan {
+  id           String     @id @default(cuid())
+  namaToko     String
+  alamat       String?
+  pemilikToko  String?
+  kontak       String?
+  organisasiId String
+  organisasi   Organisasi @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
+
+  // Relasi: Toko bisa menjadi sumber transaksi penjualan
+  transaksi    Transaksi[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organisasiId])
+}
+
+// ============================================================
+// MODEL: KOPERASI (SIMPAN PINJAM)
+// ============================================================
+
+/// Simpanan — data simpanan anggota koperasi (1:1 dengan Anggota)
+model Simpanan {
+  id                       String   @id @default(cuid())
+  anggotaId                String   @unique // Relasi 1:1
+  anggota                  Anggota  @relation(fields: [anggotaId], references: [id], onDelete: Cascade)
+  simpananPokok            Float    @default(0) // Simpanan pokok (dibayar sekali)
+  simpananWajib            Float    @default(0) // Simpanan wajib (rutin)
+  terakhirBayarWajib       DateTime? // Tanggal terakhir bayar simpanan wajib
+  simpanan                 Float    @default(0) // Simpanan biasa
+  tambahanModal            Float    @default(0) // Tambahan modal
+  simpananSukarela         Float    @default(0) // Simpanan sukarela
+  simpanan1                Float    @default(0) // Simpanan 1 (custom)
+  simpanan2                Float    @default(0) // Simpanan 2 (custom)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}
+
+/// Pinjaman — data pinjaman anggota koperasi (1:Many dengan Anggota)
+model Pinjaman {
+  id                      String           @id @default(cuid())
+  anggotaId               String
+  anggota                 Anggota          @relation(fields: [anggotaId], references: [id], onDelete: Cascade)
+  jenisPinjaman           JenisPinjaman
+  tanggalPencairan        DateTime
+  nilaiPinjaman           Float            // Total nilai pinjaman
+  angsuranBulan           Int              // Jumlah bulan angsuran (x bulan)
+  nilaiPokokAngsuran      Float            // Nilai pokok per angsuran
+
+  // === Logika otomatis: diupdate setiap pembayaran ===
+  tanggalPembayaranTerakhir DateTime?      // Tanggal bayar terakhir
+  angsuranKe              Int              @default(0) // Angsuran ke-berapa
+  sisaPinjaman            Float            // Sisa pinjaman (auto-calculated)
+
+  // Relasi: Pinjaman memiliki banyak pembayaran angsuran
+  pembayaran              PembayaranAngsuran[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([anggotaId])
+}
+
+/// PembayaranAngsuran — log pembayaran angsuran pinjaman
+model PembayaranAngsuran {
+  id              String   @id @default(cuid())
+  pinjamanId      String
+  pinjaman        Pinjaman @relation(fields: [pinjamanId], references: [id], onDelete: Cascade)
+  tanggalBayar    DateTime @default(now())
+  jumlahBayar     Float    // Nominal pembayaran
+  angsuranKe      Int      // Ini adalah angsuran ke-berapa
+  sisaPinjaman    Float    // Sisa pinjaman setelah pembayaran ini
+  createdAt       DateTime @default(now())
+
+  @@index([pinjamanId])
+}
+
+// ============================================================
+// MODEL: CHART OF ACCOUNTS & JURNAL (CORE ACCOUNTING)
+// ============================================================
+
+/// Akun — master data akun buku besar (Chart of Accounts)
+model Akun {
+  id           String       @id @default(cuid())
+  kodeAkun     String       // Kode akun (misal: 1-1001)
+  namaAkun     String       // Nama akun (misal: Kas)
+  kategori     KategoriAkun // Kategori (Aset Lancar, Aset Tetap, dll.)
+  saldoNormal  SaldoNormal  // Saldo normal (Debit/Kredit)
+  deskripsi    String?
+  organisasiId String
+  organisasi   Organisasi   @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
+
+  // Relasi: Akun memiliki banyak detail jurnal
+  detailJurnal DetailJurnal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([kodeAkun, organisasiId])
+  @@index([organisasiId])
+  @@index([kategori])
+}
+
+/// Transaksi — header transaksi jurnal
+model Transaksi {
+  id               String        @id @default(cuid())
+  nomorTransaksi   String        // Auto-generated: JU-082026-001
+  tanggal          DateTime      // Tanggal transaksi
+  jenisJurnal      JenisJurnal   // Tipe jurnal
+  keterangan       String?       // Deskripsi transaksi
+  buktiTransaksi   String?       // Path file bukti (opsional)
+  organisasiId     String
+  organisasi       Organisasi    @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
+
+  // Sumber transaksi (opsional, relasi ke toko/anggota)
+  tokoPembelianId  String?
+  tokoPembelian    TokoPembelian? @relation(fields: [tokoPembelianId], references: [id], onDelete: SetNull)
+  tokoPenjualanId  String?
+  tokoPenjualan    TokoPenjualan? @relation(fields: [tokoPenjualanId], references: [id], onDelete: SetNull)
+  anggotaId        String?
+  anggota          Anggota?       @relation(fields: [anggotaId], references: [id], onDelete: SetNull)
+
+  // Relasi: Transaksi memiliki banyak detail jurnal (One-to-Many)
+  detailJurnal     DetailJurnal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([nomorTransaksi, organisasiId])
+  @@index([organisasiId])
+  @@index([jenisJurnal])
+  @@index([tanggal])
+}
+
+/// DetailJurnal — baris debit/kredit dalam satu transaksi
+/// Ini adalah inti dari double-entry bookkeeping
+/// Setiap transaksi HARUS memiliki total debit = total kredit
+model DetailJurnal {
+  id           String       @id @default(cuid())
+  transaksiId  String
+  transaksi    Transaksi    @relation(fields: [transaksiId], references: [id], onDelete: Cascade)
+  akunId       String
+  akun         Akun         @relation(fields: [akunId], references: [id], onDelete: Restrict)
+  posisi       PosisiJurnal // DEBIT atau KREDIT
+  nominal      Float        // Jumlah nominal
+  keterangan   String?      // Keterangan per baris (opsional)
+  createdAt    DateTime     @default(now())
+
+  @@index([transaksiId])
+  @@index([akunId])
+}

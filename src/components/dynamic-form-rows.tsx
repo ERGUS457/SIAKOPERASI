@@ -1,0 +1,124 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Trash2 } from "lucide-react";
+import { KategoriAkun, SaldoNormal } from "@prisma/client";
+
+export interface AkunOption {
+  id: string;
+  kodeAkun: string;
+  namaAkun: string;
+  kategori: KategoriAkun;
+  saldoNormal: SaldoNormal;
+}
+
+export interface JurnalRow {
+  id: string;
+  akunId: string;
+  nominal: number;
+  keterangan: string;
+}
+
+interface DynamicFormRowsProps {
+  title: string;
+  rows: JurnalRow[];
+  akunOptions: AkunOption[];
+  onAddRow: () => void;
+  onRemoveRow: (id: string) => void;
+  onChangeRow: (id: string, field: keyof JurnalRow, value: any) => void;
+  total: number;
+  minRows?: number;
+  maxRows?: number;
+  hideAddButton?: boolean;
+}
+
+export function DynamicFormRows({
+  title,
+  rows,
+  akunOptions,
+  onAddRow,
+  onRemoveRow,
+  onChangeRow,
+  total,
+  minRows = 1,
+  maxRows = 999,
+  hideAddButton = false,
+}: DynamicFormRowsProps) {
+  return (
+    <div className="space-y-4 rounded-lg border p-4">
+      <div className="flex items-center justify-between">
+        <h4 className="font-medium">{title}</h4>
+        <div className="text-sm font-medium">
+          Total: <span className="text-primary">{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(total)}</span>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {rows.map((row, index) => (
+          <div key={row.id} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-muted/50 p-3 rounded-md">
+            <div className="w-full sm:w-1/3">
+              <Select
+                value={row.akunId}
+                onValueChange={(val) => onChangeRow(row.id, "akunId", val)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Akun" />
+                </SelectTrigger>
+                <SelectContent>
+                  {akunOptions.map((akun) => (
+                    <SelectItem key={akun.id} value={akun.id}>
+                      {akun.kodeAkun} - {akun.namaAkun}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="w-full sm:w-1/4">
+              <Input
+                type="number"
+                min="0"
+                placeholder="Nominal"
+                value={row.nominal || ""}
+                onChange={(e) => onChangeRow(row.id, "nominal", Number(e.target.value) || 0)}
+              />
+            </div>
+            
+            <div className="w-full sm:w-1/3 flex gap-2">
+              <Input
+                placeholder="Keterangan (Opsional)"
+                value={row.keterangan}
+                onChange={(e) => onChangeRow(row.id, "keterangan", e.target.value)}
+              />
+              <Button
+                type="button"
+                variant="destructive"
+                size="icon"
+                className="shrink-0"
+                onClick={() => onRemoveRow(row.id)}
+                disabled={rows.length <= minRows}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {!hideAddButton && rows.length < maxRows && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="w-full mt-2 border-dashed"
+          onClick={onAddRow}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Tambah Baris {title}
+        </Button>
+      )}
+    </div>
+  );
+}

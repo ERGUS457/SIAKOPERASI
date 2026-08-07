@@ -1,69 +1,210 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BookOpen, Users, FolderTree, BookText, FileBarChart, Building2, ArrowRight, Sparkles, Shield, Zap } from 'lucide-react';
 
-export default function Home() {
+const features = [
+  {
+    icon: BookOpen,
+    title: "Double-Entry Bookkeeping",
+    description: "Sistem pencatatan ganda yang memastikan keseimbangan dan akurasi laporan keuangan Anda.",
+    color: "from-blue-500 to-cyan-400",
+    iconColor: "text-blue-500",
+  },
+  {
+    icon: Users,
+    title: "Manajemen Simpan Pinjam",
+    description: "Kelola simpanan, pinjaman, dan angsuran anggota koperasi dengan mudah dan otomatis.",
+    color: "from-purple-500 to-pink-400",
+    iconColor: "text-purple-500",
+  },
+  {
+    icon: FolderTree,
+    title: "Chart of Accounts",
+    description: "Bagan akun fleksibel standar SAK ETAP yang dapat disesuaikan dengan kebutuhan.",
+    color: "from-emerald-500 to-teal-400",
+    iconColor: "text-emerald-500",
+  },
+  {
+    icon: BookText,
+    title: "5 Jenis Jurnal",
+    description: "Jurnal Pembelian, Penjualan, Penerimaan Kas, Pengeluaran Kas, dan Jurnal Umum.",
+    color: "from-amber-500 to-orange-400",
+    iconColor: "text-amber-500",
+  },
+  {
+    icon: FileBarChart,
+    title: "Laporan Real-Time",
+    description: "Buku Besar, Neraca Saldo, Laba Rugi, dan Neraca yang dihitung secara real-time.",
+    color: "from-pink-500 to-rose-400",
+    iconColor: "text-pink-500",
+  },
+  {
+    icon: Building2,
+    title: "Multi-Organisasi",
+    description: "Setiap koperasi memiliki ruang kerja terpisah dan privasi data yang terjamin.",
+    color: "from-indigo-500 to-violet-400",
+    iconColor: "text-indigo-500",
+  },
+];
+
+const stats = [
+  { label: "Fitur Akuntansi", value: "40+" },
+  { label: "Jenis Jurnal", value: "5" },
+  { label: "Laporan Keuangan", value: "4" },
+  { label: "Keamanan Data", value: "100%" },
+];
+
+export default function LandingPage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-xl">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-lg font-bold gradient-text">SIA Koperasi</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/login">
+              <Button variant="ghost" size="sm">Login</Button>
+            </Link>
+            <Link href="/register">
+              <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/25">
+                Daftar Gratis
+              </Button>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </nav>
+
+      <main className="flex-1">
+        {/* Hero */}
+        <section className="relative w-full overflow-hidden py-24 md:py-32 lg:py-40">
+          {/* Background Effects */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 animated-gradient" />
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/20 rounded-full blur-[100px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-purple-500/20 rounded-full blur-[100px]" />
+
+          <div className="container relative z-10 mx-auto px-4 md:px-6 flex flex-col items-center text-center space-y-8">
+            <div className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-sm">
+              <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
+              Platform Akuntansi Koperasi Terbaik
+            </div>
+
+            <h1 className="max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              Kelola Keuangan{" "}
+              <span className="gradient-text">Koperasi</span> Anda{" "}
+              <span className="gradient-text">dengan Mudah</span>
+            </h1>
+
+            <p className="mx-auto max-w-[650px] text-lg text-muted-foreground md:text-xl leading-relaxed">
+              Solusi lengkap berbasis web untuk pencatatan akuntansi, manajemen simpan pinjam, dan pelaporan keuangan secara real-time.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Link href="/register">
+                <Button size="lg" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/25 px-8 h-12 text-base">
+                  Mulai Sekarang — Gratis
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button size="lg" variant="outline" className="h-12 px-8 text-base">
+                  Login ke Dashboard
+                </Button>
+              </Link>
+            </div>
+
+            {/* Stats */}
+            <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4">
+              {stats.map((stat, i) => (
+                <div key={i} className="text-center">
+                  <div className="text-3xl font-bold gradient-text">{stat.value}</div>
+                  <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Features */}
+        <section className="w-full py-24 border-t">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="mx-auto mb-16 max-w-2xl text-center">
+              <div className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-4 py-1.5 text-sm font-medium text-muted-foreground mb-4">
+                <Zap className="h-3.5 w-3.5 text-amber-500" />
+                Fitur Unggulan
+              </div>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                Semua yang Anda Butuhkan dalam <span className="gradient-text">Satu Platform</span>
+              </h2>
+              <p className="mt-4 text-muted-foreground text-lg">
+                Dirancang khusus untuk kebutuhan koperasi Indonesia dengan standar akuntansi SAK ETAP.
+              </p>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature, i) => {
+                const Icon = feature.icon;
+                return (
+                  <Card
+                    key={i}
+                    className="group relative overflow-hidden border bg-card hover-lift cursor-default"
+                  >
+                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                    <CardHeader>
+                      <div className={`mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${feature.color} shadow-lg`}>
+                        <Icon className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg">{feature.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-sm leading-relaxed">
+                        {feature.description}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="w-full py-24 border-t">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-[1px]">
+              <div className="rounded-3xl bg-background/95 backdrop-blur-xl px-8 py-16 text-center sm:px-16">
+                <Shield className="mx-auto mb-6 h-12 w-12 text-indigo-500" />
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                  Siap Mendigitalisasi Keuangan Koperasi Anda?
+                </h2>
+                <p className="mx-auto mt-4 max-w-xl text-muted-foreground text-lg">
+                  Daftar sekarang dan nikmati kemudahan pencatatan akuntansi dengan sistem yang aman dan terpercaya.
+                </p>
+                <div className="mt-8 flex justify-center gap-4">
+                  <Link href="/register">
+                    <Button size="lg" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/25 px-8 h-12 text-base">
+                      Daftar Gratis Sekarang
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
+
+      {/* Footer */}
+      <footer className="w-full border-t py-8">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          &copy; {new Date().getFullYear()} SIA Koperasi — Sistem Informasi Akuntansi. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }
