@@ -5,7 +5,9 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const session = await auth();
-    if (!session || !session.user || !(session as any).userId) {
+    const userId = session?.user?.id;
+
+    if (!session || !userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -14,8 +16,6 @@ export async function POST(req: Request) {
     if (!fotoProfil) {
       return NextResponse.json({ error: "Foto tidak ditemukan" }, { status: 400 });
     }
-
-    const userId = (session as any).userId;
 
     // Update user profile in database
     await prisma.user.update({
