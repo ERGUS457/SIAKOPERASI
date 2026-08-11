@@ -57,8 +57,8 @@ export function DynamicFormRows({
 
       <div className="space-y-3">
         {rows.map((row, index) => (
-          <div key={row.id} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-muted/50 p-3 rounded-md">
-            <div className="w-full sm:w-1/3">
+          <div key={row.id} className="grid grid-cols-1 sm:grid-cols-[2fr_1.5fr_2fr_auto] gap-3 items-center bg-muted/50 p-3 rounded-md">
+            <div>
               <Combobox
                 options={akunOptions.map(akun => ({
                   label: `${akun.kodeAkun} - ${akun.namaAkun}`,
@@ -70,7 +70,7 @@ export function DynamicFormRows({
               />
             </div>
             
-            <div className="w-full sm:w-1/4">
+            <div>
               <Input
                 type="number"
                 min="0"
@@ -80,12 +80,15 @@ export function DynamicFormRows({
               />
             </div>
             
-            <div className="w-full sm:w-1/3 flex gap-2">
+            <div>
               <Input
                 placeholder="Keterangan (Opsional)"
                 value={row.keterangan}
                 onChange={(e) => onChangeRow(row.id, "keterangan", e.target.value)}
               />
+            </div>
+
+            <div>
               <Button
                 type="button"
                 variant="destructive"
