@@ -1,12 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Download, FileText, FileSpreadsheet } from "lucide-react";
-import * as XLSX from "xlsx";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, Loader2 } from "lucide-react";
 import { getOrganisasiInfo } from "@/lib/actions/organisasi";
@@ -18,11 +12,11 @@ interface ExportButtonsProps {
 }
 
 export function ExportButtons({ data, filename, columns }: ExportButtonsProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleViewReport = async () => {
-    try {
-      setIsLoading(true);
+  const handleViewReport = () => {
+    startTransition(async () => {
+      try {
       
       const orgInfo = await getOrganisasiInfo();
 
@@ -65,9 +59,8 @@ export function ExportButtons({ data, filename, columns }: ExportButtonsProps) {
       
     } catch (error) {
       console.error("Gagal membuka laporan", error);
-    } finally {
-      setIsLoading(false);
     }
+    }); // Close startTransition
   };
 
   return (
@@ -76,10 +69,10 @@ export function ExportButtons({ data, filename, columns }: ExportButtonsProps) {
         variant="default" 
         size="sm" 
         onClick={handleViewReport} 
-        disabled={isLoading}
+        disabled={isPending}
         className="h-8"
       >
-        {isLoading ? (
+        {isPending ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <FileText className="mr-2 h-4 w-4" />
