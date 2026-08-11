@@ -86,6 +86,55 @@ export async function submitJurnal(data: any) {
         }
       }
     });
+      // 4. Sinkronisasi dengan tabel Simpanan jika sumbernya adalah Anggota
+    if (anggotaId) {
+      const simpananAkun = await tx.akun.findMany({
+        where: { 
+          organisasiId, 
+          namaAkun: { contains: "Simpanan", mode: "insensitive" } 
+        }
+      });
+      
+      const simpananMap = new Map(simpananAkun.map(a => [a.id, a.namaAkun.toLowerCase()]));
+
+      let diffPokok = 0;
+      let diffWajib = 0;
+      let diffSukarela = 0;
+
+      // Akun Simpanan bertambah di sisi KREDIT, berkurang di DEBIT
+      for (const r of data.kreditRows) {
+        const namaAkun = simpananMap.get(r.akunId);
+        if (namaAkun) {
+          if (namaAkun.includes("pokok")) diffPokok += Number(r.nominal);
+          else if (namaAkun.includes("wajib")) diffWajib += Number(r.nominal);
+          else if (namaAkun.includes("sukarela")) diffSukarela += Number(r.nominal);
+        }
+      }
+
+      for (const r of data.debitRows) {
+        const namaAkun = simpananMap.get(r.akunId);
+        if (namaAkun) {
+          if (namaAkun.includes("pokok")) diffPokok -= Number(r.nominal);
+          else if (namaAkun.includes("wajib")) diffWajib -= Number(r.nominal);
+          else if (namaAkun.includes("sukarela")) diffSukarela -= Number(r.nominal);
+        }
+      }
+
+      if (diffPokok !== 0 || diffWajib !== 0 || diffSukarela !== 0) {
+        const existingSimpanan = await tx.simpanan.findUnique({ where: { anggotaId } });
+        if (existingSimpanan) {
+          await tx.simpanan.update({
+            where: { anggotaId },
+            data: {
+              simpananPokok: { increment: diffPokok },
+              simpananWajib: { increment: diffWajib },
+              simpananSukarela: { increment: diffSukarela }
+            }
+          });
+        }
+      }
+    }
+
     return { success: true, data: transaksi };
   }, {
     maxWait: 15000,

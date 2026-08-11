@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { DataTable } from "@/components/data-table";
 import { Akun, KategoriAkun, SaldoNormal } from "@prisma/client";
 import { KATEGORI_AKUN_LABELS, getSaldoNormal } from "@/lib/accounting";
@@ -97,22 +97,31 @@ export default function AkunClient({ initialData }: AkunClientProps) {
     setIsDialogOpen(true);
   };
 
+  const [isPending, startTransition] = useTransition();
+  const loading = isPending || formLoading;
+  const [formLoading, setFormLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
     try {
       if (editingId) {
         const updated = await updateAkun(editingId, formData);
-        setData((prev) => prev.map((a) => (a.id === editingId ? updated : a)));
+        startTransition(() => {
+          setData((prev) => prev.map((a) => (a.id === editingId ? updated : a)));
+          setIsDialogOpen(false);
+        });
       } else {
         const created = await createAkun(formData);
-        setData((prev) => [...prev, created]);
+        startTransition(() => {
+          setData((prev) => [...prev, created]);
+          setIsDialogOpen(false);
+        });
       }
-      setIsDialogOpen(false);
     } catch (error: any) {
       alert(error.message);
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
