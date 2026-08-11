@@ -18,9 +18,14 @@ export default async function BukuBesarPage({
   });
 
   const params = await searchParams;
-  const akunId = params?.akunId;
+  let akunId = params?.akunId;
   const startDate = params?.startDate;
   const endDate = params?.endDate;
+  
+  if (!akunId && akunList.length > 0) {
+    akunId = akunList[0].id;
+  }
+
   let detailJurnal: any[] = [];
   let akunSelected = null;
   let saldoAwal = 0;

@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ExportButtons } from "@/components/export-buttons";
+import { useMemo } from "react";
 
 export default function BukuBesarClient({
   akunList,
@@ -35,7 +37,73 @@ export default function BukuBesarClient({
     router.push(`/dashboard/laporan/buku-besar?${params.toString()}`);
   };
 
-  let currentSaldo = saldoAwal;
+  const { processedData, exportData, totalDebit, totalKredit, finalSaldo } = useMemo(() => {
+    let currentSaldo = saldoAwal;
+    let totalDeb = 0;
+    let totalKre = 0;
+
+    const data = detailJurnal.map((dj) => {
+      if (akunSelected?.saldoNormal === "DEBIT") {
+        if (dj.posisi === "DEBIT") currentSaldo += dj.nominal;
+        else currentSaldo -= dj.nominal;
+      } else {
+        if (dj.posisi === "KREDIT") currentSaldo += dj.nominal;
+        else currentSaldo -= dj.nominal;
+      }
+
+      if (dj.posisi === "DEBIT") totalDeb += dj.nominal;
+      if (dj.posisi === "KREDIT") totalKre += dj.nominal;
+
+      return {
+        ...dj,
+        runningSaldo: currentSaldo,
+      };
+    });
+
+    const expData = [
+      {
+        Tanggal: "-",
+        "No. Transaksi": "-",
+        Keterangan: "Saldo Awal",
+        Debit: 0,
+        Kredit: 0,
+        Saldo: saldoAwal,
+      },
+      ...data.map((dj) => ({
+        Tanggal: formatTanggalSingkat(dj.transaksi.tanggal),
+        "No. Transaksi": dj.transaksi.nomorTransaksi,
+        Keterangan: dj.keterangan || dj.transaksi.keterangan || "-",
+        Debit: dj.posisi === "DEBIT" ? dj.nominal : 0,
+        Kredit: dj.posisi === "KREDIT" ? dj.nominal : 0,
+        Saldo: dj.runningSaldo,
+      })),
+      {
+        Tanggal: "-",
+        "No. Transaksi": "-",
+        Keterangan: "Saldo Akhir",
+        Debit: totalDeb,
+        Kredit: totalKre,
+        Saldo: currentSaldo,
+      },
+    ];
+
+    return {
+      processedData: data,
+      exportData: expData,
+      totalDebit: totalDeb,
+      totalKredit: totalKre,
+      finalSaldo: currentSaldo,
+    };
+  }, [detailJurnal, saldoAwal, akunSelected]);
+
+  const exportColumns = [
+    { header: "Tanggal", accessorKey: "Tanggal" },
+    { header: "No. Transaksi", accessorKey: "No. Transaksi" },
+    { header: "Keterangan", accessorKey: "Keterangan" },
+    { header: "Debit", accessorKey: "Debit", cell: (item: any) => formatRupiah(item.Debit) },
+    { header: "Kredit", accessorKey: "Kredit", cell: (item: any) => formatRupiah(item.Kredit) },
+    { header: "Saldo", accessorKey: "Saldo", cell: (item: any) => formatRupiah(item.Saldo) }
+  ];
 
   return (
     <div className="space-y-6">
@@ -78,13 +146,20 @@ export default function BukuBesarClient({
 
       {akunSelected && (
         <Card>
-          <CardHeader>
-            <CardTitle>
-              {akunSelected.kodeAkun} - {akunSelected.namaAkun}
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Saldo Normal: {akunSelected.saldoNormal}
-            </p>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>
+                {akunSelected.kodeAkun} - {akunSelected.namaAkun}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                Saldo Normal: {akunSelected.saldoNormal}
+              </p>
+            </div>
+            <ExportButtons 
+              data={exportData}
+              columns={exportColumns}
+              filename={`Buku_Besar_${akunSelected.kodeAkun}`} 
+            />
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
@@ -108,71 +183,51 @@ export default function BukuBesarClient({
                       {formatRupiah(saldoAwal)}
                     </TableCell>
                   </TableRow>
-                  {detailJurnal.length === 0 ? (
+                  {processedData.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={6} className="h-24 text-center">
                         Tidak ada transaksi.
                       </TableCell>
                     </TableRow>
                   ) : (
-                    detailJurnal.map((dj) => {
-                      if (akunSelected.saldoNormal === "DEBIT") {
-                        if (dj.posisi === "DEBIT") currentSaldo += dj.nominal;
-                        else currentSaldo -= dj.nominal;
-                      } else {
-                        if (dj.posisi === "KREDIT") currentSaldo += dj.nominal;
-                        else currentSaldo -= dj.nominal;
-                      }
-
-                      return (
-                        <TableRow key={dj.id}>
-                          <TableCell>
-                            {formatTanggalSingkat(dj.transaksi.tanggal)}
-                          </TableCell>
-                          <TableCell>{dj.transaksi.nomorTransaksi}</TableCell>
-                          <TableCell>
-                            {dj.keterangan || dj.transaksi.keterangan || "-"}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {dj.posisi === "DEBIT"
-                              ? formatRupiah(dj.nominal)
-                              : "-"}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            {dj.posisi === "KREDIT"
-                              ? formatRupiah(dj.nominal)
-                              : "-"}
-                          </TableCell>
-                          <TableCell className="text-right font-medium">
-                            {formatRupiah(currentSaldo)}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
+                    processedData.map((dj) => (
+                      <TableRow key={dj.id}>
+                        <TableCell>
+                          {formatTanggalSingkat(dj.transaksi.tanggal)}
+                        </TableCell>
+                        <TableCell>{dj.transaksi.nomorTransaksi}</TableCell>
+                        <TableCell>
+                          {dj.keterangan || dj.transaksi.keterangan || "-"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {dj.posisi === "DEBIT"
+                            ? formatRupiah(dj.nominal)
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {dj.posisi === "KREDIT"
+                            ? formatRupiah(dj.nominal)
+                            : "-"}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatRupiah(dj.runningSaldo)}
+                        </TableCell>
+                      </TableRow>
+                    ))
                   )}
-                  {detailJurnal.length > 0 && (
+                  {processedData.length > 0 && (
                     <TableRow className="bg-muted/50 font-bold">
                       <TableCell colSpan={3} className="text-right">
                         Saldo Akhir
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatRupiah(
-                          detailJurnal.reduce(
-                            (acc, curr) => acc + (curr.posisi === "DEBIT" ? curr.nominal : 0),
-                            0
-                          )
-                        )}
+                        {formatRupiah(totalDebit)}
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatRupiah(
-                          detailJurnal.reduce(
-                            (acc, curr) => acc + (curr.posisi === "KREDIT" ? curr.nominal : 0),
-                            0
-                          )
-                        )}
+                        {formatRupiah(totalKredit)}
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatRupiah(currentSaldo)}
+                        {formatRupiah(finalSaldo)}
                       </TableCell>
                     </TableRow>
                   )}
