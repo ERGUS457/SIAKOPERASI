@@ -17,5 +17,5 @@ export default NextAuth(authConfig).auth((req) => {
 });
 
 export const config = {
-  matcher: ['/dashboard/:path*']
+  matcher: ['/dashboard/:path*', '/report-preview']
 };
