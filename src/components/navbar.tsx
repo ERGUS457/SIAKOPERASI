@@ -6,6 +6,7 @@ import { Building, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Sidebar } from "@/components/sidebar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function Navbar() {
   const { data: session } = useSession();
@@ -43,15 +44,87 @@ export function Navbar() {
           {/* Theme Toggle */}
           <ThemeToggle />
           
-          {/* User Info */}
-          <div className="flex items-center gap-3 rounded-full border bg-card pl-3 pr-1 py-1 shadow-sm">
-            <span className="text-sm font-medium text-muted-foreground hidden sm:inline-block">
-              {username}
-            </span>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-sm shadow-lg shadow-indigo-500/25">
-              {initial}
-            </div>
-          </div>
+          {/* User Info with Profile Popover */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="flex items-center gap-3 rounded-full border bg-card pl-3 pr-1 py-1 shadow-sm hover:bg-accent transition-colors">
+                <span className="text-sm font-medium text-muted-foreground hidden sm:inline-block">
+                  {username}
+                </span>
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 overflow-hidden">
+                  {(session as any)?.user?.fotoProfil ? (
+                    <img src={(session as any).user.fotoProfil} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    initial
+                  )}
+                </div>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0" align="end">
+              <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-4 border-b">
+                <div className="flex items-center gap-4">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-md overflow-hidden">
+                    {(session as any)?.user?.fotoProfil ? (
+                      <img src={(session as any).user.fotoProfil} alt="Profile" className="w-full h-full object-cover" />
+                    ) : (
+                      initial
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">{username}</h4>
+                    <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 space-y-4">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-medium leading-none">Informasi Koperasi</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {organisasiNama}
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium leading-none">Ganti Foto Profil</h4>
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    className="text-xs w-full cursor-pointer file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (file.size > 2 * 1024 * 1024) {
+                        alert("Ukuran gambar terlalu besar! Maksimal 2MB.");
+                        return;
+                      }
+                      
+                      const reader = new FileReader();
+                      reader.onload = async (event) => {
+                        const base64 = event.target?.result;
+                        try {
+                          const res = await fetch("/api/upload-profile", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ fotoProfil: base64 }),
+                          });
+                          if (res.ok) {
+                            window.location.reload();
+                          } else {
+                            alert("Gagal mengunggah foto profil.");
+                          }
+                        } catch (error) {
+                          console.error(error);
+                          alert("Terjadi kesalahan.");
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                  />
+                  <p className="text-[10px] text-muted-foreground">Maksimal 2MB (JPG/PNG)</p>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </header>
 

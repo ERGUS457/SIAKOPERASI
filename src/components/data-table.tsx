@@ -13,17 +13,20 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ChevronLeft, ChevronRight, Plus } from "lucide-react";
 
+import { ExportButtons } from "./export-buttons";
+
 interface DataTableProps<T> {
   data: T[];
   columns: {
     header: string;
-    accessorKey: keyof T | string;
+    accessorKey: string;
     cell?: (item: T) => React.ReactNode;
   }[];
-  searchKey?: keyof T;
+  searchKey?: string;
   searchPlaceholder?: string;
   onAdd?: () => void;
   addLabel?: string;
+  exportFilename?: string;
 }
 
 export function DataTable<T>({
@@ -33,6 +36,7 @@ export function DataTable<T>({
   searchPlaceholder = "Cari...",
   onAdd,
   addLabel = "Tambah Data",
+  exportFilename = "Data",
 }: DataTableProps<T>) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -66,20 +70,23 @@ export function DataTable<T>({
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        {searchKey && (
-          <div className="relative w-full sm:max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder={searchPlaceholder}
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1); // Reset page on search
-              }}
-              className="pl-8"
-            />
-          </div>
-        )}
+        <div className="flex w-full flex-1 items-center gap-2">
+          {searchKey && (
+            <div className="relative w-full max-w-sm">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={searchPlaceholder}
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1); // Reset page on search
+                }}
+                className="pl-9 w-full bg-background"
+              />
+            </div>
+          )}
+          <ExportButtons data={filteredData} filename={exportFilename} columns={columns} />
+        </div>
         
         {onAdd && (
           <Button onClick={onAdd} className="w-full sm:w-auto">

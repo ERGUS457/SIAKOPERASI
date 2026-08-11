@@ -65,6 +65,7 @@ model Organisasi {
   alamat    String?
   telepon   String?
   email     String?
+  fotoProfil String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -85,6 +86,7 @@ model User {
   email        String     @unique
   password     String     // Hashed with bcryptjs
   nama         String
+  fotoProfil   String?    @db.Text
   organisasiId String
   organisasi   Organisasi @relation(fields: [organisasiId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())

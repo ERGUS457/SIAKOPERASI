@@ -11,6 +11,12 @@ export async function getAnggota() {
 
   return prisma.anggota.findMany({
     where: { organisasiId },
+    include: {
+      transaksi: {
+        include: { detailJurnal: { include: { akun: true } } },
+        orderBy: { tanggal: 'desc' }
+      }
+    },
     orderBy: { createdAt: "desc" },
   });
 }

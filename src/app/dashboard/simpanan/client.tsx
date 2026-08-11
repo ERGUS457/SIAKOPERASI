@@ -89,6 +89,30 @@ export default function SimpananClient({ data }: { data: any[] }) {
               </div>
             ))}
           </div>
+
+          {formData?.anggota?.transaksi && formData.anggota.transaksi.length > 0 && (
+            <div className="py-2 border-t mt-4">
+              <h4 className="text-sm font-semibold mb-3">Riwayat Transaksi</h4>
+              <div className="max-h-[200px] overflow-y-auto space-y-2">
+                {formData.anggota.transaksi.map((tx: any) => (
+                  <div key={tx.id} className="text-sm p-3 border rounded-md flex justify-between items-center bg-muted/30">
+                    <div>
+                      <p className="font-medium">{new Date(tx.tanggal).toLocaleDateString('id-ID')}</p>
+                      <p className="text-xs text-muted-foreground">{tx.keterangan}</p>
+                    </div>
+                    <div className="text-right">
+                      {tx.detailJurnal.map((dj: any) => (
+                        <div key={dj.id} className={dj.posisi === 'DEBIT' ? 'text-green-600' : 'text-red-600'}>
+                          {dj.akun?.namaAkun} ({dj.posisi}): {formatRupiah(dj.nominal)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <DialogFooter>
             <Button onClick={handleSave}>Simpan</Button>
           </DialogFooter>

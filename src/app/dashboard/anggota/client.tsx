@@ -23,18 +23,25 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Eye } from "lucide-react";
+import { formatRupiah } from "@/lib/utils";
 
 interface AnggotaClientProps {
-  data: Anggota[];
+  data: any[];
 }
 
 export function AnggotaClient({ data }: AnggotaClientProps) {
   const [isPending, startTransition] = useTransition();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   
-  const [selectedItem, setSelectedItem] = useState<Anggota | null>(null);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
+
+  const handleDetail = (item: any) => {
+    setSelectedItem(item);
+    setIsDetailOpen(true);
+  };
   
   const [formData, setFormData] = useState({
     nomorAnggota: "",
@@ -103,8 +110,11 @@ export function AnggotaClient({ data }: AnggotaClientProps) {
     {
       header: "Aksi",
       accessorKey: "id",
-      cell: (item: Anggota) => (
+      cell: (item: any) => (
         <div className="flex gap-2">
+          <Button variant="outline" size="icon" onClick={() => handleDetail(item)}>
+            <Eye className="h-4 w-4" />
+          </Button>
           <Button variant="outline" size="icon" onClick={() => handleEdit(item)}>
             <Pencil className="h-4 w-4" />
           </Button>
@@ -184,6 +194,55 @@ export function AnggotaClient({ data }: AnggotaClientProps) {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Detail Anggota</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Nomor Anggota</p>
+                <p className="font-medium">{selectedItem?.nomorAnggota}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Nama</p>
+                <p className="font-medium">{selectedItem?.nama}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Tanggal Daftar</p>
+                <p className="font-medium">{selectedItem?.tanggalDaftar ? new Date(selectedItem.tanggalDaftar).toLocaleDateString('id-ID') : '-'}</p>
+              </div>
+            </div>
+
+            <div className="py-2 border-t mt-4">
+              <h4 className="text-sm font-semibold mb-3">Riwayat Transaksi</h4>
+              <div className="max-h-[300px] overflow-y-auto space-y-2">
+                {selectedItem?.transaksi && selectedItem.transaksi.length > 0 ? (
+                  selectedItem.transaksi.map((tx: any) => (
+                    <div key={tx.id} className="text-sm p-3 border rounded-md flex justify-between items-center bg-muted/30">
+                      <div>
+                        <p className="font-medium">{new Date(tx.tanggal).toLocaleDateString('id-ID')} - {tx.nomorTransaksi}</p>
+                        <p className="text-xs text-muted-foreground">{tx.keterangan}</p>
+                      </div>
+                      <div className="text-right">
+                        {tx.detailJurnal.map((dj: any) => (
+                          <div key={dj.id} className={dj.posisi === 'DEBIT' ? 'text-green-600' : 'text-red-600'}>
+                            {dj.akun?.namaAkun} ({dj.posisi}): {formatRupiah(dj.nominal)}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">Belum ada riwayat transaksi.</p>
+                )}
+              </div>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 

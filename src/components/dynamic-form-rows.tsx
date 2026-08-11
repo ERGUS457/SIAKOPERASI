@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Plus, Trash2 } from "lucide-react";
 import { KategoriAkun, SaldoNormal } from "@prisma/client";
 
@@ -59,21 +59,15 @@ export function DynamicFormRows({
         {rows.map((row, index) => (
           <div key={row.id} className="flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-muted/50 p-3 rounded-md">
             <div className="w-full sm:w-1/3">
-              <Select
+              <Combobox
+                options={akunOptions.map(akun => ({
+                  label: `${akun.kodeAkun} - ${akun.namaAkun}`,
+                  value: akun.id
+                }))}
                 value={row.akunId}
-                onValueChange={(val) => onChangeRow(row.id, "akunId", val)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih Akun" />
-                </SelectTrigger>
-                <SelectContent>
-                  {akunOptions.map((akun) => (
-                    <SelectItem key={akun.id} value={akun.id}>
-                      {akun.kodeAkun} - {akun.namaAkun}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                onChange={(val) => onChangeRow(row.id, "akunId", val)}
+                placeholder="Ketik nama akun..."
+              />
             </div>
             
             <div className="w-full sm:w-1/4">

@@ -64,6 +64,7 @@ const menuGroups = [
   {
     title: "Laporan Keuangan",
     items: [
+      { title: "Laporan Simpanan", href: "/dashboard/laporan/simpanan", icon: PiggyBank },
       { title: "Buku Besar", href: "/dashboard/laporan/buku-besar", icon: BookOpen },
       { title: "Neraca Saldo", href: "/dashboard/laporan/neraca-saldo", icon: FileSpreadsheet },
       { title: "Laba Rugi", href: "/dashboard/laporan/laba-rugi", icon: PieChart },
