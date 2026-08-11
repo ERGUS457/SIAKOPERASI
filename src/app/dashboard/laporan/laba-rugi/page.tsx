@@ -6,13 +6,15 @@ import LabaRugiClient from "./client";
 export default async function LabaRugiPage({
   searchParams,
 }: {
-  searchParams: { startDate?: string; endDate?: string };
+  searchParams: Promise<{ startDate?: string; endDate?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.organisasiId) redirect("/login");
   const organisasiId = session.user.organisasiId;
 
-  const { startDate, endDate } = searchParams;
+  const params = await searchParams;
+  const startDate = params?.startDate;
+  const endDate = params?.endDate;
 
   const dateFilter: any = {};
   if (startDate) dateFilter.gte = new Date(startDate);

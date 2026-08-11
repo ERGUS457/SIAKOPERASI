@@ -6,7 +6,7 @@ import BukuBesarClient from "./client";
 export default async function BukuBesarPage({
   searchParams,
 }: {
-  searchParams: { akunId?: string; startDate?: string; endDate?: string };
+  searchParams: Promise<{ akunId?: string; startDate?: string; endDate?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.organisasiId) redirect("/login");
@@ -17,7 +17,10 @@ export default async function BukuBesarPage({
     orderBy: { kodeAkun: "asc" },
   });
 
-  const { akunId, startDate, endDate } = searchParams;
+  const params = await searchParams;
+  const akunId = params?.akunId;
+  const startDate = params?.startDate;
+  const endDate = params?.endDate;
   let detailJurnal: any[] = [];
   let akunSelected = null;
   let saldoAwal = 0;

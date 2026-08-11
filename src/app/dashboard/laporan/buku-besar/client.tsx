@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { formatRupiah, formatTanggalSingkat } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -46,18 +46,15 @@ export default function BukuBesarClient({
         <CardContent className="flex flex-col md:flex-row gap-4 items-end">
           <div className="space-y-2 flex-1">
             <label className="text-sm font-medium">Akun</label>
-            <Select value={akunId} onValueChange={setAkunId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Pilih Akun..." />
-              </SelectTrigger>
-              <SelectContent>
-                {akunList.map((akun) => (
-                  <SelectItem key={akun.id} value={akun.id}>
-                    {akun.kodeAkun} - {akun.namaAkun}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Combobox
+              options={akunList.map((akun) => ({
+                label: `${akun.kodeAkun} - ${akun.namaAkun}`,
+                value: akun.id,
+              }))}
+              value={akunId}
+              onChange={setAkunId}
+              placeholder="Pilih Akun..."
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Dari Tanggal</label>
