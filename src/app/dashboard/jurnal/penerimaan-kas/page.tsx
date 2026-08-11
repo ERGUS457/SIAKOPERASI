@@ -17,6 +17,19 @@ export default async function Page() {
   const tokoPenjualan = await prisma.tokoPenjualan.findMany({ where: { organisasiId } });
   const anggota = await prisma.anggota.findMany({ where: { organisasiId } });
 
+  const transaksi = await prisma.transaksi.findMany({
+    where: { 
+      organisasiId,
+      jenisJurnal: "PENERIMAAN_KAS"
+    },
+    include: {
+      detailJurnal: true
+    },
+    orderBy: {
+      tanggal: 'desc'
+    }
+  });
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Penerimaan Kas</h1>
@@ -25,6 +38,7 @@ export default async function Page() {
         tokoPembelian={tokoPembelian}
         tokoPenjualan={tokoPenjualan}
         anggota={anggota}
+        transaksi={transaksi}
       />
     </div>
   );

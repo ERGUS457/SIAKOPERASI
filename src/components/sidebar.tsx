@@ -8,7 +8,7 @@ import {
   Users,
   Building2,
   Store,
-  PiggyBank,
+  Landmark,
   Wallet,
   ClipboardList,
   BookOpen,
@@ -41,7 +41,7 @@ const menuGroups = [
   {
     title: "Koperasi",
     items: [
-      { title: "Simpanan", href: "/dashboard/simpanan", icon: PiggyBank },
+      { title: "Simpanan", href: "/dashboard/simpanan", icon: Landmark },
       { title: "Pinjaman", href: "/dashboard/pinjaman", icon: Wallet },
     ],
   },
@@ -64,7 +64,7 @@ const menuGroups = [
   {
     title: "Laporan Keuangan",
     items: [
-      { title: "Laporan Simpanan", href: "/dashboard/laporan/simpanan", icon: PiggyBank },
+      { title: "Laporan Simpanan", href: "/dashboard/laporan/simpanan", icon: Landmark },
       { title: "Buku Besar", href: "/dashboard/laporan/buku-besar", icon: BookOpen },
       { title: "Neraca Saldo", href: "/dashboard/laporan/neraca-saldo", icon: FileSpreadsheet },
       { title: "Laba Rugi", href: "/dashboard/laporan/laba-rugi", icon: PieChart },

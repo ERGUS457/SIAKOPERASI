@@ -16,14 +16,27 @@ export default async function Page() {
   const tokoPembelian = await prisma.tokoPembelian.findMany({ where: { organisasiId } });
   const anggota = await prisma.anggota.findMany({ where: { organisasiId } });
 
+  const transaksi = await prisma.transaksi.findMany({
+    where: { 
+      organisasiId,
+      jenisJurnal: "PEMBELIAN_KREDIT"
+    },
+    include: {
+      detailJurnal: true
+    },
+    orderBy: {
+      tanggal: 'desc'
+    }
+  });
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Pembelian Kredit</h1>
       <ClientPage 
         akunOptions={akunOptions}
         tokoPembelian={tokoPembelian}
-        
         anggota={anggota}
+        transaksi={transaksi}
       />
     </div>
   );

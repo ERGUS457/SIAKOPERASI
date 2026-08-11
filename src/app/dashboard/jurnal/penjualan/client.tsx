@@ -11,9 +11,15 @@ import { DynamicFormRows, JurnalRow } from "@/components/dynamic-form-rows";
 import { toast } from "sonner";
 import { submitJurnal } from "./actions";
 
-export default function ClientPage({ akunOptions, tokoPenjualan, anggota }: any) {
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { DataTable } from "@/components/data-table";
+import { formatRupiah, formatTanggalSingkat } from "@/lib/utils";
+
+export default function ClientPage({ akunOptions, tokoPenjualan, anggota, transaksi }: any) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
   const [tanggal, setTanggal] = useState(new Date().toISOString().split('T')[0]);
   const [keterangan, setKeterangan] = useState("");
   const [sumberType, setSumberType] = useState<string>("ANGGOTA");
@@ -50,11 +56,16 @@ export default function ClientPage({ akunOptions, tokoPenjualan, anggota }: any)
         keterangan,
         sumberType,
         sumberId,
-        // debitRows tidak dikirim, diotomatisasi di server
         kreditRows: filledKredit
       });
       toast.success("Jurnal Penjualan berhasil disimpan");
-      router.push("/dashboard/jurnal");
+      setIsDialogOpen(false);
+      
+      setTanggal(new Date().toISOString().split('T')[0]);
+      setKeterangan("");
+      setKreditRows([{ id: Math.random().toString(), akunId: "", nominal: 0, keterangan: "" }]);
+      
+      router.refresh();
     } catch (e: any) {
       toast.error(e.message || "Terjadi kesalahan");
     } finally {
@@ -62,77 +73,115 @@ export default function ClientPage({ akunOptions, tokoPenjualan, anggota }: any)
     }
   };
 
+  const tableData = transaksi.map((t: any) => {
+    const total = t.detailJurnal.filter((dj: any) => dj.posisi === "KREDIT").reduce((acc: number, curr: any) => acc + curr.nominal, 0);
+    return {
+      ...t,
+      total,
+    }
+  });
+
+  const columns = [
+    { header: "Tanggal", accessorKey: "tanggal", cell: (item: any) => formatTanggalSingkat(item.tanggal) },
+    { header: "No. Transaksi", accessorKey: "nomorTransaksi" },
+    { header: "Keterangan", accessorKey: "keterangan" },
+    { header: "Total Nilai", accessorKey: "total", cell: (item: any) => formatRupiah(item.total) },
+  ];
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>Tanggal Penjualan</Label>
-          <Input type="date" value={tanggal} onChange={(e) => setTanggal(e.target.value)} />
-        </div>
-        
-        <div className="space-y-2">
-          <Label>Pelanggan (Kontak)</Label>
-          <div className="flex gap-2">
-            <Select value={sumberType} onValueChange={setSumberType}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Pilih Tipe" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="TOKO_PENJUALAN">Toko Pelanggan</SelectItem>
-                <SelectItem value="ANGGOTA">Anggota</SelectItem>
-              </SelectContent>
-            </Select>
+      <DataTable 
+        data={tableData}
+        columns={columns}
+        searchKey="nomorTransaksi"
+        searchPlaceholder="Cari nomor transaksi..."
+        onAdd={() => setIsDialogOpen(true)}
+        exportFilename="Riwayat_Penjualan"
+      />
 
-            {(sumberType && sumberType !== "LAINNYA") && (
-              <Select value={sumberId} onValueChange={setSumberId}>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Pilih Kontak" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sumberType === "TOKO_PENJUALAN" && tokoPenjualan?.map((t: any) => (
-                    <SelectItem key={t.id} value={t.id}>{t.namaToko}</SelectItem>
-                  ))}
-                  {sumberType === "ANGGOTA" && anggota?.map((a: any) => (
-                    <SelectItem key={a.id} value={a.id}>{a.nama}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Tambah Penjualan Kredit</DialogTitle>
+            <DialogDescription>
+              Catat penjualan barang atau jasa secara kredit di sini.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Tanggal Penjualan</Label>
+                <Input type="date" value={tanggal} onChange={(e) => setTanggal(e.target.value)} />
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Pelanggan (Kontak)</Label>
+                <div className="flex gap-2">
+                  <Select value={sumberType} onValueChange={setSumberType}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Pilih Tipe" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="TOKO_PENJUALAN">Toko Pelanggan</SelectItem>
+                      <SelectItem value="ANGGOTA">Anggota</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {(sumberType && sumberType !== "LAINNYA") && (
+                    <Select value={sumberId} onValueChange={setSumberId}>
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Pilih Kontak" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sumberType === "TOKO_PENJUALAN" && tokoPenjualan?.map((t: any) => (
+                          <SelectItem key={t.id} value={t.id}>{t.namaToko}</SelectItem>
+                        ))}
+                        {sumberType === "ANGGOTA" && anggota?.map((a: any) => (
+                          <SelectItem key={a.id} value={a.id}>{a.nama}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label>Keterangan Transaksi</Label>
+                <Input placeholder="Contoh: Penjualan barang ke Anggota B" value={keterangan} onChange={(e) => setKeterangan(e.target.value)} />
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <div className="rounded-lg border bg-emerald-50/50 p-4 dark:bg-emerald-950/20 dark:border-emerald-900/50">
+                <h4 className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 mb-2">Informasi Otomatisasi Jurnal</h4>
+                <p className="text-sm text-emerald-600/80 dark:text-emerald-300/80">
+                  Sistem akan otomatis mencatat sisi <strong>Debit</strong> ke akun <strong>Piutang Usaha</strong> sebesar total nominal di bawah ini. Anda hanya perlu memasukkan rincian akun pendapatan pada tabel Kredit.
+                </p>
+              </div>
+
+              <DynamicFormRows
+                title="Rincian Penjualan (Kredit)"
+                rows={kreditRows}
+                akunOptions={akunOptions}
+                onAddRow={handleAddKredit}
+                onRemoveRow={handleRemoveKredit}
+                onChangeRow={handleChangeKredit}
+                total={totalKredit}
+                minRows={1}
+                maxRows={999}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Batal</Button>
+              <Button onClick={onSubmit} disabled={loading} size="lg" className="bg-gradient-to-r from-emerald-600 to-teal-600">
+                {loading ? "Menyimpan..." : "Simpan Penjualan"}
+              </Button>
+            </div>
           </div>
-        </div>
-
-        <div className="space-y-2 md:col-span-2">
-          <Label>Keterangan Transaksi</Label>
-          <Input placeholder="Contoh: Penjualan barang ke Anggota B" value={keterangan} onChange={(e) => setKeterangan(e.target.value)} />
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <div className="rounded-lg border bg-emerald-50/50 p-4 dark:bg-emerald-950/20 dark:border-emerald-900/50">
-          <h4 className="text-sm font-semibold text-emerald-700 dark:text-emerald-400 mb-2">Informasi Otomatisasi Jurnal</h4>
-          <p className="text-sm text-emerald-600/80 dark:text-emerald-300/80">
-            Sistem akan otomatis mencatat sisi <strong>Debit</strong> ke akun <strong>Piutang Usaha</strong> sebesar total nominal di bawah ini. Anda hanya perlu memasukkan rincian akun pendapatan pada tabel Kredit.
-          </p>
-        </div>
-
-        <DynamicFormRows
-          title="Rincian Penjualan (Kredit)"
-          rows={kreditRows}
-          akunOptions={akunOptions}
-          onAddRow={handleAddKredit}
-          onRemoveRow={handleRemoveKredit}
-          onChangeRow={handleChangeKredit}
-          total={totalKredit}
-          minRows={1}
-          maxRows={999}
-        />
-      </div>
-
-      <div className="flex justify-end pt-4">
-        <Button onClick={onSubmit} disabled={loading} size="lg" className="bg-gradient-to-r from-emerald-600 to-teal-600">
-          {loading ? "Menyimpan..." : "Simpan Penjualan"}
-        </Button>
-      </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
