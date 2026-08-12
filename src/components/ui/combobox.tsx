@@ -1,15 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { Command } from "cmdk";
+import { Check, ChevronsUpDown, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 export interface ComboboxProps {
   options: { label: string; value: string }[];
@@ -22,7 +16,7 @@ export interface ComboboxProps {
 }
 
 export function Combobox({
-  options,
+  options = [],
   value,
   onChange,
   placeholder = "Pilih...",
@@ -31,61 +25,122 @@ export function Combobox({
   className,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const selectedOption = options.find((opt) => opt.value === value);
+
+  // Filter options based on search query
+  const filteredOptions = React.useMemo(() => {
+    if (!search.trim()) return options;
+    const q = search.toLowerCase();
+    return options.filter((opt) => opt.label.toLowerCase().includes(q));
+  }, [options, search]);
+
+  // Close on outside click or touch
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [open]);
+
+  // Focus input when opened
+  React.useEffect(() => {
+    if (open) {
+      const timer = setTimeout(() => inputRef.current?.focus(), 50);
+      return () => clearTimeout(timer);
+    } else {
+      setSearch("");
+    }
+  }, [open]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} modal={false}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn("w-full justify-between font-normal", className, !value && "text-muted-foreground")}
-        >
-          <span className="truncate flex-1 text-left">
-            {value
-              ? options.find((option) => option.value === value)?.label
-              : placeholder}
-          </span>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className={cn("w-[400px] p-0", className)}>
-        <Command className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground">
-          <div className="flex items-center border-b px-3">
-            <Command.Input
-              className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder={searchPlaceholder}
-            />
-          </div>
-          <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden touch-pan-y">
-            <Command.Empty className="py-6 text-center text-sm">{emptyMessage}</Command.Empty>
-            <Command.Group className="overflow-hidden p-1 text-foreground">
-              {options.map((option) => (
-                <Command.Item
-                  key={option.value}
-                  value={option.label} // cmdk filters by value by default, so pass label to filter by name
-                  onSelect={() => {
-                    onChange(option.value);
-                    setOpen(false);
-                  }}
+    <div ref={containerRef} className="relative w-full">
+      <Button
+        type="button"
+        variant="outline"
+        role="combobox"
+        aria-expanded={open}
+        onClick={() => setOpen((prev) => !prev)}
+        className={cn(
+          "w-full justify-between font-normal h-10 px-3 bg-background border-input text-left",
+          className,
+          !value && "text-muted-foreground"
+        )}
+      >
+        <span className="truncate flex-1">
+          {selectedOption ? selectedOption.label : placeholder}
+        </span>
+        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
 
-                  className={cn(
-                    "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                  )}
-                >
-                  <Check
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 z-[9999] w-full min-w-[280px] sm:min-w-[360px] rounded-lg border bg-popover text-popover-foreground shadow-2xl animate-in fade-in-0 zoom-in-95">
+          {/* Search bar */}
+          <div className="flex items-center border-b px-3 py-2 bg-muted/30 rounded-t-lg">
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={searchPlaceholder}
+              className="flex h-8 w-full rounded-md bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="p-1 hover:bg-muted rounded-full text-muted-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* List of options */}
+          <div className="max-h-[260px] overflow-y-auto p-1 space-y-1">
+            {filteredOptions.length === 0 ? (
+              <div className="py-6 text-center text-sm text-muted-foreground">
+                {emptyMessage}
+              </div>
+            ) : (
+              filteredOptions.map((opt) => {
+                const isSelected = opt.value === value;
+                return (
+                  <div
+                    key={opt.value}
+                    onClick={() => {
+                      onChange(opt.value);
+                      setOpen(false);
+                    }}
                     className={cn(
-                      "mr-2 h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
+                      "relative flex cursor-pointer select-none items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                      isSelected
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "hover:bg-accent hover:text-accent-foreground"
                     )}
-                  />
-                  {option.label}
-                </Command.Item>
-              ))}
-            </Command.Group>
-          </Command.List>
-        </Command>
-      </PopoverContent>
-    </Popover>
+                  >
+                    <span className="truncate pr-2">{opt.label}</span>
+                    {isSelected && <Check className="h-4 w-4 shrink-0 text-primary" />}
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
