@@ -177,10 +177,14 @@ export default function PinjamanClient({ data, anggotaList }: { data: any[], ang
               <Label htmlFor="nilaiPinjaman" className="text-right">Nilai Pinjaman</Label>
               <Input
                 id="nilaiPinjaman"
-                type="number"
-                value={formData.nilaiPinjaman || ''}
-                onChange={(e) => setFormData({ ...formData, nilaiPinjaman: e.target.value })}
-                className="col-span-3"
+                type="text"
+                placeholder="Rp 0"
+                value={formData.nilaiPinjaman ? formatRupiah(Number(formData.nilaiPinjaman)) : ''}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, '');
+                  setFormData({ ...formData, nilaiPinjaman: raw });
+                }}
+                className="col-span-3 font-semibold text-primary"
               />
             </div>
 

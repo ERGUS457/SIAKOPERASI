@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Combobox } from "@/components/ui/combobox";
 import { Plus, Trash2 } from "lucide-react";
 import { KategoriAkun, SaldoNormal } from "@prisma/client";
+import { formatRupiah } from "@/lib/utils";
 
 export interface AkunOption {
   id: string;
@@ -78,17 +79,19 @@ export function DynamicFormRows({
             </div>
 
             {/* Nominal */}
-            <div className="w-full sm:w-36 md:w-44 shrink-0">
+            <div className="w-full sm:w-44 md:w-52 shrink-0">
               <label className="text-xs font-medium text-muted-foreground mb-1 block sm:hidden">
                 Nominal (Rp)
               </label>
               <Input
-                type="number"
-                min="0"
-                placeholder="Nominal (Rp)"
-                value={row.nominal || ""}
-                onChange={(e) => onChangeRow(row.id, "nominal", Number(e.target.value) || 0)}
-                className="h-10 text-sm font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                type="text"
+                placeholder="Rp 0"
+                value={row.nominal ? formatRupiah(row.nominal) : ""}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, "");
+                  onChangeRow(row.id, "nominal", Number(raw) || 0);
+                }}
+                className="h-10 text-sm font-semibold text-primary"
               />
             </div>
 
