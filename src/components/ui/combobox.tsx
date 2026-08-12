@@ -57,7 +57,7 @@ export function Combobox({
               placeholder={searchPlaceholder}
             />
           </div>
-          <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden">
+          <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden touch-pan-y">
             <Command.Empty className="py-6 text-center text-sm">{emptyMessage}</Command.Empty>
             <Command.Group className="overflow-hidden p-1 text-foreground">
               {options.map((option) => (
