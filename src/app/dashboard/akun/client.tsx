@@ -119,14 +119,16 @@ export default function AkunClient({ initialData }: AkunClientProps) {
     });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (id: string) => {
     if (!confirm("Yakin ingin menghapus akun ini?")) return;
-    try {
-      await deleteAkun(id);
-      setData((prev) => prev.filter((a) => a.id !== id));
-    } catch (error: any) {
-      alert(error.message);
-    }
+    startTransition(async () => {
+      try {
+        await deleteAkun(id);
+        setData((prev) => prev.filter((a) => a.id !== id));
+      } catch (error: any) {
+        alert(error.message);
+      }
+    });
   };
 
   const handleExport = () => {
@@ -175,15 +177,18 @@ export default function AkunClient({ initialData }: AkunClientProps) {
           };
         });
 
-        const res = await importAkun(toImport);
-        alert(`Berhasil import ${res.imported} akun baru.`);
-        window.location.reload(); // simple reload to fetch new data
-      } catch (err: any) {
-        alert("Gagal import: " + err.message);
-      } finally {
-        setLoading(false);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-      }
+        startTransition(async () => {
+          try {
+            const res = await importAkun(toImport);
+            alert(`Berhasil import ${res.imported} akun baru.`);
+            window.location.reload(); // simple reload to fetch new data
+          } catch (err: any) {
+            alert("Gagal import: " + err.message);
+          } finally {
+            setLoading(false);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+          }
+        });
     };
     reader.readAsBinaryString(file);
   };
