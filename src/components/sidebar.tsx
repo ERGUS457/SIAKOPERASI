@@ -17,6 +17,7 @@ import {
   ArrowRightLeft,
   FileSpreadsheet,
   PieChart,
+  BarChart3,
   LogOut,
   Sparkles,
 } from "lucide-react";
@@ -69,6 +70,8 @@ const menuGroups = [
       { title: "Neraca Saldo", href: "/dashboard/laporan/neraca-saldo", icon: FileSpreadsheet },
       { title: "Laba Rugi", href: "/dashboard/laporan/laba-rugi", icon: PieChart },
       { title: "Neraca", href: "/dashboard/laporan/neraca", icon: FileSpreadsheet },
+      { title: "Arus Kas", href: "/dashboard/laporan/arus-kas", icon: TrendingUp },
+      { title: "Perubahan Modal", href: "/dashboard/laporan/perubahan-modal", icon: BarChart3 },
     ],
   },
 ];

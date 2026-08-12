@@ -85,7 +85,14 @@ export function DataTable<T>({
               />
             </div>
           )}
-          <ExportButtons data={filteredData} filename={exportFilename} columns={columns} />
+          <ExportButtons
+            config={{
+              namaLaporan: exportFilename.replace(/_/g, " "),
+              filename: exportFilename,
+              columns: columns as any,
+              data: filteredData as any[],
+            }}
+          />
         </div>
         
         {onAdd && (

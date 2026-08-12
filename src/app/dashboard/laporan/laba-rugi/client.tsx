@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ExportButtons } from "@/components/export-buttons";
 
 export default function LabaRugiClient({
   pendapatan,
@@ -32,11 +33,40 @@ export default function LabaRugiClient({
   const totalBeban = beban.reduce((sum, item) => sum + item.saldo, 0);
   const labaBersih = totalPendapatan - totalBeban;
 
+  const exportSections = [
+    {
+      title: "Pendapatan",
+      headers: ["Kode Akun", "Nama Akun", "Saldo"],
+      rows: [
+        ...pendapatan.map(a => [a.kodeAkun, a.namaAkun, formatRupiah(a.saldo)]),
+        ["", "Total Pendapatan", formatRupiah(totalPendapatan)],
+      ]
+    },
+    {
+      title: "Beban",
+      headers: ["Kode Akun", "Nama Akun", "Saldo"],
+      rows: [
+        ...beban.map(a => [a.kodeAkun, a.namaAkun, formatRupiah(a.saldo)]),
+        ["", "Total Beban", formatRupiah(totalBeban)],
+        ["", "LABA / RUGI BERSIH", formatRupiah(labaBersih)],
+      ]
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Filter Tanggal</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Filter Tanggal</CardTitle>
+            <ExportButtons config={{
+              namaLaporan: "Laporan Laba Rugi",
+              filename: "Laporan_Laba_Rugi",
+              startDate,
+              endDate,
+              sections: exportSections,
+            }} />
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4 items-end">
           <div className="space-y-2 flex-1">

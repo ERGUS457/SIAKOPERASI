@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ExportButtons } from "@/components/export-buttons";
 
 export default function NeracaSaldoClient({
   neracaSaldo,
@@ -29,11 +30,34 @@ export default function NeracaSaldoClient({
   const totalDebit = neracaSaldo.reduce((sum, item) => sum + item.debit, 0);
   const totalKredit = neracaSaldo.reduce((sum, item) => sum + item.kredit, 0);
 
+  const exportSections = [{
+    title: "Neraca Saldo",
+    headers: ["Kode Akun", "Nama Akun", "Debit", "Kredit"],
+    rows: [
+      ...neracaSaldo.filter(a => a.debit > 0 || a.kredit > 0).map(a => [
+        a.kodeAkun,
+        a.namaAkun,
+        a.debit > 0 ? formatRupiah(a.debit) : "-",
+        a.kredit > 0 ? formatRupiah(a.kredit) : "-",
+      ]),
+      ["", "TOTAL", formatRupiah(totalDebit), formatRupiah(totalKredit)],
+    ]
+  }];
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Filter Tanggal</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Filter Tanggal</CardTitle>
+            <ExportButtons config={{
+              namaLaporan: "Neraca Saldo",
+              filename: "Neraca_Saldo",
+              startDate,
+              endDate,
+              sections: exportSections,
+            }} />
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4 items-end">
           <div className="space-y-2 flex-1">

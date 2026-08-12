@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ExportButtons } from "@/components/export-buttons";
 
 export default function NeracaClient({
   asetLancar,
@@ -72,11 +73,53 @@ export default function NeracaClient({
     ));
   };
 
+  const exportSections = [
+    {
+      title: "ASET",
+      headers: ["Keterangan", "Jumlah"],
+      rows: [
+        ["ASET LANCAR", ""],
+        ...asetLancar.map(a => [a.kodeAkun + " - " + a.namaAkun, formatRupiah(a.saldo)]),
+        ["Total Aset Lancar", formatRupiah(totalAsetLancar)],
+        ["ASET TETAP", ""],
+        ...asetTetap.map(a => [a.kodeAkun + " - " + a.namaAkun, formatRupiah(a.saldo)]),
+        ["Total Aset Tetap", formatRupiah(totalAsetTetap)],
+        ["TOTAL ASET", formatRupiah(totalAset)],
+      ]
+    },
+    {
+      title: "KEWAJIBAN & MODAL",
+      headers: ["Keterangan", "Jumlah"],
+      rows: [
+        ["KEWAJIBAN JANGKA PENDEK", ""],
+        ...kewajibanPendek.map(a => [a.kodeAkun + " - " + a.namaAkun, formatRupiah(a.saldo)]),
+        ["Total Kewajiban Jangka Pendek", formatRupiah(totalKewajibanPendek)],
+        ["KEWAJIBAN JANGKA PANJANG", ""],
+        ...kewajibanPanjang.map(a => [a.kodeAkun + " - " + a.namaAkun, formatRupiah(a.saldo)]),
+        ["Total Kewajiban Jangka Panjang", formatRupiah(totalKewajibanPanjang)],
+        ["MODAL", ""],
+        ...modal.map(a => [a.kodeAkun + " - " + a.namaAkun, formatRupiah(a.saldo)]),
+        ["Laba / Rugi Berjalan", formatRupiah(labaBersih)],
+        ["Total Modal", formatRupiah(totalModal)],
+        ["TOTAL KEWAJIBAN & MODAL", formatRupiah(totalKewajibanModal)],
+      ]
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Filter Tanggal</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Filter Tanggal</CardTitle>
+            <ExportButtons config={{
+              namaLaporan: "Neraca (Balance Sheet)",
+              filename: "Neraca",
+              startDate,
+              endDate,
+              sections: exportSections,
+            }} />
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col md:flex-row gap-4 items-end">
           <div className="space-y-2 flex-1">

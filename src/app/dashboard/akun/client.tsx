@@ -46,6 +46,7 @@ export default function AkunClient({ initialData }: AkunClientProps) {
     deskripsi: "",
   });
 
+  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -97,32 +98,25 @@ export default function AkunClient({ initialData }: AkunClientProps) {
     setIsDialogOpen(true);
   };
 
-  const [isPending, startTransition] = useTransition();
-  const loading = isPending || formLoading;
-  const [formLoading, setFormLoading] = useState(false);
+  const isFormLoading = isPending || loading;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormLoading(true);
-    try {
-      if (editingId) {
-        const updated = await updateAkun(editingId, formData);
-        startTransition(() => {
+    startTransition(async () => {
+      try {
+        if (editingId) {
+          const updated = await updateAkun(editingId, formData);
           setData((prev) => prev.map((a) => (a.id === editingId ? updated : a)));
           setIsDialogOpen(false);
-        });
-      } else {
-        const created = await createAkun(formData);
-        startTransition(() => {
+        } else {
+          const created = await createAkun(formData);
           setData((prev) => [...prev, created]);
           setIsDialogOpen(false);
-        });
+        }
+      } catch (error: any) {
+        alert(error.message);
       }
-    } catch (error: any) {
-      alert(error.message);
-    } finally {
-      setFormLoading(false);
-    }
+    });
   };
 
   const handleDelete = async (id: string) => {
@@ -371,8 +365,8 @@ export default function AkunClient({ initialData }: AkunClientProps) {
               >
                 Batal
               </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Menyimpan..." : "Simpan"}
+              <Button type="submit" disabled={isFormLoading}>
+                {isFormLoading ? "Menyimpan..." : "Simpan"}
               </Button>
             </DialogFooter>
           </form>

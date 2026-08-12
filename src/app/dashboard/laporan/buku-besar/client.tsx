@@ -155,10 +155,15 @@ export default function BukuBesarClient({
                 Saldo Normal: {akunSelected.saldoNormal}
               </p>
             </div>
-            <ExportButtons 
-              data={exportData}
-              columns={exportColumns}
-              filename={`Buku_Besar_${akunSelected.kodeAkun}`} 
+            <ExportButtons
+              config={{
+                namaLaporan: `Buku Besar - ${akunSelected.kodeAkun} ${akunSelected.namaAkun}`,
+                filename: `Buku_Besar_${akunSelected.kodeAkun}`,
+                columns: exportColumns,
+                data: exportData,
+                startDate: initialParams.startDate,
+                endDate: initialParams.endDate,
+              }}
             />
           </CardHeader>
           <CardContent>
