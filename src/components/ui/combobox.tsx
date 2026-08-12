@@ -33,7 +33,7 @@ export function Combobox({
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} modal={false}>
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -65,6 +65,11 @@ export function Combobox({
                   key={option.value}
                   value={option.label} // cmdk filters by value by default, so pass label to filter by name
                   onSelect={() => {
+                    onChange(option.value);
+                    setOpen(false);
+                  }}
+                  onPointerDown={(e) => {
+                    // Prevent losing focus on mobile and instantly select if needed
                     onChange(option.value);
                     setOpen(false);
                   }}
