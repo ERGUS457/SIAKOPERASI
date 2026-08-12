@@ -23,6 +23,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Plus, Download, Upload, Search, Edit, Trash2 } from "lucide-react";
 import { createAkun, updateAkun, deleteAkun, importAkun } from "./actions";
+import Swal from "sweetalert2";
 
 import * as XLSX from "xlsx";
 
@@ -104,34 +105,48 @@ export default function AkunClient({ initialData }: AkunClientProps) {
         if (editingId) {
           const res = await updateAkun(editingId, formData);
           if (res?.error) {
-            alert(res.error);
+            Swal.fire({ title: "Gagal", text: res.error, icon: "error" });
             return;
           }
+          Swal.fire({ title: "Berhasil", text: "Akun berhasil diperbarui", icon: "success", timer: 1500, showConfirmButton: false });
           setIsDialogOpen(false);
         } else {
           const res = await createAkun(formData);
           if (res?.error) {
-            alert(res.error);
+            Swal.fire({ title: "Gagal", text: res.error, icon: "error" });
             return;
           }
+          Swal.fire({ title: "Berhasil", text: "Akun berhasil ditambahkan", icon: "success", timer: 1500, showConfirmButton: false });
           setIsDialogOpen(false);
         }
       } catch (error: any) {
-        alert(error.message);
+        Swal.fire({ title: "Error", text: error.message, icon: "error" });
       }
     });
   };
 
-  const handleDelete = (id: string) => {
-    if (!confirm("Yakin ingin menghapus akun ini?")) return;
+  const handleDelete = async (id: string) => {
+    const result = await Swal.fire({
+      title: "Yakin ingin menghapus?",
+      text: "Data akun ini akan dihapus permanen!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal"
+    });
+    
+    if (!result.isConfirmed) return;
+
     startTransition(async () => {
       try {
         const res = await deleteAkun(id);
         if (res?.error) {
-          alert(res.error);
+          Swal.fire({ title: "Gagal", text: res.error, icon: "error" });
+        } else {
+          Swal.fire({ title: "Terhapus!", text: "Akun telah dihapus.", icon: "success", timer: 1500, showConfirmButton: false });
         }
       } catch (error: any) {
-        alert(error.message);
+        Swal.fire({ title: "Error", text: error.message, icon: "error" });
       }
     });
   };
@@ -186,20 +201,21 @@ export default function AkunClient({ initialData }: AkunClientProps) {
           try {
             const res = await importAkun(toImport);
             if (res?.error) {
-              alert(res.error);
+              Swal.fire({ title: "Gagal", text: res.error, icon: "error" });
               return;
             }
-            alert(`Berhasil import ${res?.imported} akun baru.`);
-            window.location.reload(); // simple reload to fetch new data
+            Swal.fire({ title: "Berhasil", text: `Berhasil import ${res?.imported} akun baru.`, icon: "success", timer: 1500, showConfirmButton: false }).then(() => {
+              window.location.reload(); // simple reload to fetch new data
+            });
           } catch (err: any) {
-            alert("Gagal import: " + err.message);
+            Swal.fire({ title: "Gagal", text: "Gagal import: " + err.message, icon: "error" });
           } finally {
             setLoading(false);
             if (fileInputRef.current) fileInputRef.current.value = "";
           }
         });
       } catch (err: any) {
-        alert("File excel tidak valid: " + err.message);
+        Swal.fire({ title: "Error", text: "File excel tidak valid: " + err.message, icon: "error" });
         setLoading(false);
       }
     };

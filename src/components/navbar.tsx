@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Sidebar } from "@/components/sidebar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Swal from "sweetalert2";
 
 export function Navbar() {
   const { data: session } = useSession();
@@ -94,7 +95,7 @@ export function Navbar() {
                       const file = e.target.files?.[0];
                       if (!file) return;
                       if (file.size > 2 * 1024 * 1024) {
-                        alert("Ukuran gambar terlalu besar! Maksimal 2MB.");
+                        Swal.fire({ title: "Gagal", text: "Ukuran gambar terlalu besar! Maksimal 2MB.", icon: "error" });
                         return;
                       }
                       
@@ -108,13 +109,15 @@ export function Navbar() {
                             body: JSON.stringify({ fotoProfil: base64 }),
                           });
                           if (res.ok) {
-                            window.location.reload();
+                            Swal.fire({ title: "Berhasil", text: "Foto profil berhasil diubah", icon: "success", timer: 1500, showConfirmButton: false }).then(() => {
+                              window.location.reload();
+                            });
                           } else {
-                            alert("Gagal mengunggah foto profil.");
+                            Swal.fire({ title: "Gagal", text: "Gagal mengunggah foto profil.", icon: "error" });
                           }
                         } catch (error) {
                           console.error(error);
-                          alert("Terjadi kesalahan.");
+                          Swal.fire({ title: "Error", text: "Terjadi kesalahan.", icon: "error" });
                         }
                       };
                       reader.readAsDataURL(file);

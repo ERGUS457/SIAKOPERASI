@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Lock, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Loader2, LogIn, Sparkles } from "lucide-react";
+import Swal from "sweetalert2";
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function LoginPage() {
@@ -33,12 +34,15 @@ export default function LoginPage() {
       });
       if (result?.error) {
         setError('Email atau password salah');
+        Swal.fire({ title: "Login Gagal", text: "Email atau password yang Anda masukkan salah.", icon: "error" });
       } else {
+        await Swal.fire({ title: "Login Berhasil", text: "Selamat datang kembali!", icon: "success", timer: 1500, showConfirmButton: false });
         router.push('/dashboard');
         router.refresh();
       }
     } catch {
       setError('Terjadi kesalahan saat login');
+      Swal.fire({ title: "Error", text: "Terjadi kesalahan pada server saat mencoba login.", icon: "error" });
     } finally {
       setLoading(false);
     }

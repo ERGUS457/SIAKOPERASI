@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, User, Mail, Lock, Building2, Phone, MapPin, Loader2, UserPlus, Sparkles } from "lucide-react";
+import Swal from "sweetalert2";
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function RegisterPage() {
@@ -29,6 +30,7 @@ export default function RegisterPage() {
     setError('');
     if (formData.password !== formData.confirmPassword) {
       setError('Password dan Konfirmasi Password tidak cocok');
+      Swal.fire({ title: "Gagal", text: "Password dan Konfirmasi Password tidak cocok", icon: "warning" });
       return;
     }
     setLoading(true);
@@ -39,13 +41,16 @@ export default function RegisterPage() {
         body: JSON.stringify(formData),
       });
       if (res.ok) {
+        await Swal.fire({ title: "Registrasi Berhasil", text: "Akun koperasi Anda berhasil dibuat! Silakan login.", icon: "success", timer: 2000, showConfirmButton: false });
         router.push('/login?registered=true');
       } else {
         const data = await res.json();
         setError(data.error || 'Terjadi kesalahan saat registrasi');
+        Swal.fire({ title: "Registrasi Gagal", text: data.error || 'Terjadi kesalahan saat registrasi', icon: "error" });
       }
     } catch {
       setError('Terjadi kesalahan jaringan');
+      Swal.fire({ title: "Error", text: "Terjadi kesalahan jaringan", icon: "error" });
     } finally {
       setLoading(false);
     }

@@ -22,6 +22,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
+import Swal from "sweetalert2";
 
 const menuGroups = [
   {
@@ -136,7 +137,20 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
       {/* Logout */}
       <div className="border-t p-3">
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={async () => {
+            const result = await Swal.fire({
+              title: "Yakin ingin keluar?",
+              text: "Anda akan keluar dari sistem",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#ef4444",
+              confirmButtonText: "Ya, Keluar",
+              cancelButtonText: "Batal"
+            });
+            if (result.isConfirmed) {
+              signOut({ callbackUrl: "/login" });
+            }
+          }}
           className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200"
         >
           <LogOut className="h-4 w-4" />

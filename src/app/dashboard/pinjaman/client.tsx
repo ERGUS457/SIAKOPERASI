@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Swal from "sweetalert2";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -67,10 +68,21 @@ export default function PinjamanClient({ data, anggotaList }: { data: any[], ang
   ];
 
   const handleBayar = async (id: string) => {
-    if (confirm("Apakah anda yakin ingin membayar angsuran?")) {
+    const result = await Swal.fire({
+      title: "Bayar Angsuran?",
+      text: "Anda akan mencatat pembayaran angsuran ini",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Bayar",
+      cancelButtonText: "Batal"
+    });
+    if (result.isConfirmed) {
       setIsSubmitting(true);
       try {
         await bayarAngsuran(id);
+        Swal.fire({ title: "Berhasil", text: "Pembayaran berhasil dicatat", icon: "success", timer: 1500, showConfirmButton: false });
+      } catch(e: any) {
+        Swal.fire({ title: "Gagal", text: e.message, icon: "error" });
       } finally {
         setIsSubmitting(false);
       }
@@ -78,10 +90,21 @@ export default function PinjamanClient({ data, anggotaList }: { data: any[], ang
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Apakah anda yakin ingin menghapus pinjaman ini?")) {
+    const result = await Swal.fire({
+      title: "Hapus Pinjaman?",
+      text: "Data pinjaman ini akan dihapus permanen",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Ya, Hapus",
+      cancelButtonText: "Batal"
+    });
+    if (result.isConfirmed) {
       setIsSubmitting(true);
       try {
         await deletePinjaman(id);
+        Swal.fire({ title: "Terhapus", text: "Pinjaman berhasil dihapus", icon: "success", timer: 1500, showConfirmButton: false });
+      } catch(e: any) {
+        Swal.fire({ title: "Gagal", text: e.message, icon: "error" });
       } finally {
         setIsSubmitting(false);
       }
@@ -92,8 +115,11 @@ export default function PinjamanClient({ data, anggotaList }: { data: any[], ang
     setIsSubmitting(true);
     try {
       await createPinjaman(formData);
+      Swal.fire({ title: "Berhasil", text: "Pinjaman baru berhasil ditambahkan", icon: "success", timer: 1500, showConfirmButton: false });
       setIsDialogOpen(false);
       setFormData({});
+    } catch(e: any) {
+      Swal.fire({ title: "Gagal", text: e.message, icon: "error" });
     } finally {
       setIsSubmitting(false);
     }
