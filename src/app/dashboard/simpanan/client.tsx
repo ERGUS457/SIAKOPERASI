@@ -103,138 +103,139 @@ export default function SimpananClient({ data, akunKas, akunSimpanan }: { data: 
       <DataTable columns={columns} data={data} searchKey="anggota.nama" exportFilename="Data_Simpanan" />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-[550px] max-h-[85vh] flex flex-col p-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-2">
             <DialogTitle>Transaksi Simpanan - {selectedItem?.anggota?.nama}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Tanggal</Label>
-              <Input
-                type="date"
-                value={formData.tanggal}
-                onChange={(e) => setFormData({ ...formData, tanggal: e.target.value })}
-                className="col-span-3"
-              />
-            </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Jenis Transaksi</Label>
-              <div className="col-span-3">
-                <Select
-                  value={formData.jenisTransaksi}
-                  onValueChange={(val) => setFormData({ 
-                    ...formData, 
-                    jenisTransaksi: val,
-                    keterangan: val === "SETOR" ? "Setoran Simpanan" : "Penarikan Simpanan" 
-                  })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Jenis Transaksi" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SETOR">Penerimaan (Setor Simpanan)</SelectItem>
-                    <SelectItem value="TARIK">Pengeluaran (Tarik Simpanan)</SelectItem>
-                  </SelectContent>
-                </Select>
+          <div className="flex-1 overflow-y-auto p-6 pt-2 space-y-4">
+            <div className="grid gap-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Tanggal</Label>
+                <Input
+                  type="date"
+                  value={formData.tanggal}
+                  onChange={(e) => setFormData({ ...formData, tanggal: e.target.value })}
+                  className="col-span-3"
+                />
               </div>
-            </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Jenis Simpanan</Label>
-              <div className="col-span-3">
-                <Select
-                  value={formData.akunSimpananId}
-                  onValueChange={(val) => setFormData({ ...formData, akunSimpananId: val })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Akun Simpanan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {akunSimpanan.map((akun) => (
-                      <SelectItem key={akun.id} value={akun.id}>
-                        {akun.kodeAkun} - {akun.namaAkun}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Jenis Transaksi</Label>
+                <div className="col-span-3">
+                  <Select
+                    value={formData.jenisTransaksi}
+                    onValueChange={(val) => setFormData({ 
+                      ...formData, 
+                      jenisTransaksi: val,
+                      keterangan: val === "SETOR" ? "Setoran Simpanan" : "Penarikan Simpanan" 
+                    })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih Jenis Transaksi" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SETOR">Penerimaan (Setor Simpanan)</SelectItem>
+                      <SelectItem value="TARIK">Pengeluaran (Tarik Simpanan)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Akun Pembayaran</Label>
-              <div className="col-span-3">
-                <Select
-                  value={formData.akunKasId}
-                  onValueChange={(val) => setFormData({ ...formData, akunKasId: val })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Akun Kas/Bank" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {akunKas.map((akun) => (
-                      <SelectItem key={akun.id} value={akun.id}>
-                        {akun.kodeAkun} - {akun.namaAkun}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Jenis Simpanan</Label>
+                <div className="col-span-3">
+                  <Select
+                    value={formData.akunSimpananId}
+                    onValueChange={(val) => setFormData({ ...formData, akunSimpananId: val })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih Akun Simpanan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {akunSimpanan.map((akun) => (
+                        <SelectItem key={akun.id} value={akun.id}>
+                          {akun.kodeAkun} - {akun.namaAkun}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Nominal</Label>
-              <div className="col-span-3">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Akun Pembayaran</Label>
+                <div className="col-span-3">
+                  <Select
+                    value={formData.akunKasId}
+                    onValueChange={(val) => setFormData({ ...formData, akunKasId: val })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih Akun Kas/Bank" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {akunKas.map((akun) => (
+                        <SelectItem key={akun.id} value={akun.id}>
+                          {akun.kodeAkun} - {akun.namaAkun}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Nominal</Label>
+                <div className="col-span-3">
+                  <Input
+                    type="text"
+                    placeholder="Rp 0"
+                    value={formData.nominal ? formatRupiah(Number(formData.nominal)) : ''}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      setFormData({ ...formData, nominal: val });
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Keterangan</Label>
                 <Input
                   type="text"
-                  placeholder="Rp 0"
-                  value={formData.nominal ? formatRupiah(Number(formData.nominal)) : ''}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/[^0-9]/g, '');
-                    setFormData({ ...formData, nominal: val });
-                  }}
+                  value={formData.keterangan}
+                  onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
+                  className="col-span-3"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Keterangan</Label>
-              <Input
-                type="text"
-                value={formData.keterangan}
-                onChange={(e) => setFormData({ ...formData, keterangan: e.target.value })}
-                className="col-span-3"
-              />
-            </div>
-            
-          </div>
-
-          {selectedItem?.anggota?.transaksi && selectedItem.anggota.transaksi.length > 0 && (
-            <div className="py-2 border-t mt-2">
-              <h4 className="text-sm font-semibold mb-3">Riwayat Transaksi Terakhir</h4>
-              <div className="max-h-[150px] overflow-y-auto space-y-2">
-                {selectedItem.anggota.transaksi.map((tx: any) => (
-                  <div key={tx.id} className="text-sm p-3 border rounded-md flex justify-between items-center bg-muted/30">
-                    <div>
-                      <p className="font-medium">{new Date(tx.tanggal).toLocaleDateString('id-ID')}</p>
-                      <p className="text-xs text-muted-foreground">{tx.keterangan}</p>
+            {selectedItem?.anggota?.transaksi && selectedItem.anggota.transaksi.length > 0 && (
+              <div className="py-2 border-t mt-4">
+                <h4 className="text-sm font-semibold mb-3">Riwayat Transaksi Terakhir</h4>
+                <div className="max-h-[160px] overflow-y-auto space-y-2 pr-1">
+                  {selectedItem.anggota.transaksi.map((tx: any) => (
+                    <div key={tx.id} className="text-sm p-3 border rounded-md flex justify-between items-center bg-muted/30">
+                      <div>
+                        <p className="font-medium">{new Date(tx.tanggal).toLocaleDateString('id-ID')}</p>
+                        <p className="text-xs text-muted-foreground">{tx.keterangan}</p>
+                      </div>
+                      <div className="text-right">
+                        {tx.detailJurnal.map((dj: any) => (
+                          <div key={dj.id} className={dj.posisi === 'DEBIT' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                            {dj.akun?.namaAkun} ({dj.posisi}): {formatRupiah(dj.nominal)}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div className="text-right">
-                      {tx.detailJurnal.map((dj: any) => (
-                        <div key={dj.id} className={dj.posisi === 'DEBIT' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
-                          {dj.akun?.namaAkun} ({dj.posisi}): {formatRupiah(dj.nominal)}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
           
-          <DialogFooter>
-            <Button onClick={handleSubmit} disabled={isPending}>
+          <DialogFooter className="p-4 border-t bg-muted/20 sm:justify-end">
+            <Button onClick={handleSubmit} disabled={isPending} className="w-full sm:w-auto">
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Proses Transaksi
             </Button>
