@@ -57,45 +57,64 @@ export function DynamicFormRows({
 
       <div className="space-y-3">
         {rows.map((row, index) => (
-          <div key={row.id} className="grid grid-cols-1 sm:grid-cols-[2fr_1.5fr_2fr_auto] gap-3 items-center bg-muted/50 p-3 rounded-md">
-            <div>
+          <div
+            key={row.id}
+            className="p-3.5 rounded-lg bg-muted/40 border border-border/60 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:gap-3"
+          >
+            {/* Akun */}
+            <div className="flex-1 min-w-0 sm:min-w-[200px]">
+              <label className="text-xs font-medium text-muted-foreground mb-1 block sm:hidden">
+                Pilih Akun
+              </label>
               <Combobox
-                options={akunOptions.map(akun => ({
+                options={akunOptions.map((akun) => ({
                   label: `${akun.kodeAkun} - ${akun.namaAkun}`,
-                  value: akun.id
+                  value: akun.id,
                 }))}
                 value={row.akunId}
                 onChange={(val) => onChangeRow(row.id, "akunId", val)}
-                placeholder="Ketik nama akun..."
-              />
-            </div>
-            
-            <div>
-              <Input
-                type="number"
-                min="0"
-                placeholder="Nominal"
-                value={row.nominal || ""}
-                onChange={(e) => onChangeRow(row.id, "nominal", Number(e.target.value) || 0)}
-              />
-            </div>
-            
-            <div>
-              <Input
-                placeholder="Keterangan (Opsional)"
-                value={row.keterangan}
-                onChange={(e) => onChangeRow(row.id, "keterangan", e.target.value)}
+                placeholder="Pilih Akun..."
               />
             </div>
 
-            <div>
+            {/* Nominal */}
+            <div className="w-full sm:w-36 md:w-44 shrink-0">
+              <label className="text-xs font-medium text-muted-foreground mb-1 block sm:hidden">
+                Nominal (Rp)
+              </label>
+              <Input
+                type="number"
+                min="0"
+                placeholder="Nominal (Rp)"
+                value={row.nominal || ""}
+                onChange={(e) => onChangeRow(row.id, "nominal", Number(e.target.value) || 0)}
+                className="h-10 text-sm font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+            </div>
+
+            {/* Keterangan */}
+            <div className="flex-1 min-w-0 sm:min-w-[150px]">
+              <label className="text-xs font-medium text-muted-foreground mb-1 block sm:hidden">
+                Keterangan
+              </label>
+              <Input
+                placeholder="Keterangan (opsional)"
+                value={row.keterangan}
+                onChange={(e) => onChangeRow(row.id, "keterangan", e.target.value)}
+                className="h-10 text-sm"
+              />
+            </div>
+
+            {/* Hapus Button */}
+            <div className="flex justify-end pt-1 sm:pt-0 shrink-0">
               <Button
                 type="button"
                 variant="destructive"
                 size="icon"
-                className="shrink-0"
+                className="h-10 w-10 shrink-0"
                 onClick={() => onRemoveRow(row.id)}
                 disabled={rows.length <= minRows}
+                title="Hapus Baris"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
