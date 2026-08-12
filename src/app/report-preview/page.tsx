@@ -251,23 +251,67 @@ export default function ReportPreviewPage() {
   const handleDownloadExcel = () => {
     if (!filteredReportData) return;
     const workbook = XLSX.utils.book_new();
+    const {
+      namaLaporan,
+      namaKoperasi,
+      alamatKoperasi,
+      teleponKoperasi,
+      emailKoperasi,
+      startDate: sDate,
+      endDate: eDate,
+      tanggalCetak,
+      headers,
+      rows,
+      sections,
+    } = filteredReportData;
 
-    if (filteredReportData.headers && filteredReportData.rows) {
-      const wsData = [filteredReportData.headers, ...filteredReportData.rows];
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(workbook, ws, "Laporan");
+    let periodeText = "";
+    if (sDate && eDate) {
+      periodeText = `Periode: ${new Date(sDate).toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })} s/d ${new Date(eDate).toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })}`;
+    } else if (sDate) {
+      periodeText = `Per Tanggal: ${new Date(sDate).toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })}`;
+    } else {
+      periodeText = `Per: ${tanggalCetak || new Date().toLocaleDateString("id-ID")}`;
     }
 
-    if (filteredReportData.sections) {
-      for (const section of filteredReportData.sections) {
-        const wsData = [section.headers, ...section.rows];
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
-        XLSX.utils.book_append_sheet(
-          workbook,
-          ws,
-          section.title?.substring(0, 30) || "Data"
-        );
+    // Build Kop Surat Header rows for Excel
+    const kopHeader = [
+      [namaKoperasi?.toUpperCase() || "KOPERASI"],
+      [alamatKoperasi || ""],
+      [`Telp: ${teleponKoperasi || "-"} | Email: ${emailKoperasi || "-"}`],
+      [""],
+      [namaLaporan?.toUpperCase() || "LAPORAN"],
+      [periodeText],
+      [`Dicetak: ${tanggalCetak || new Date().toLocaleString("id-ID")}`],
+      [""],
+    ];
+
+    if (headers && rows) {
+      const wsData = [...kopHeader, headers, ...rows];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(workbook, ws, "Laporan");
+    } else if (sections) {
+      const wsData = [...kopHeader];
+      for (const section of sections) {
+        wsData.push([section.title?.toUpperCase() || ""]);
+        wsData.push(section.headers || []);
+        wsData.push(...(section.rows || []));
+        wsData.push([""]); // spacer row
       }
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(workbook, ws, "Laporan");
     }
 
     XLSX.writeFile(workbook, `${filteredReportData.filename || "Laporan"}.xlsx`);
