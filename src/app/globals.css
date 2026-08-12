@@ -185,3 +185,10 @@ body, .bg-background, .bg-card, .bg-sidebar, .bg-muted, .bg-secondary, .bg-accen
   transform: translateY(-2px);
   box-shadow: 0 8px 25px -8px rgba(99, 102, 241, 0.3);
 }
+
+/* Mencegah halaman terkunci saat dropdown (Select/Popover) terbuka */
+body[data-scroll-locked] {
+  overflow: auto !important;
+  pointer-events: auto !important;
+  padding-right: 0 !important;
+}
