@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ArrowLeft, User, Mail, Lock, Building2, Phone, MapPin, Loader2, UserPlus, Sparkles } from "lucide-react";
 import Swal from "sweetalert2";
 import { ThemeToggle } from '@/components/theme-toggle';
+import { motion } from "framer-motion";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -76,13 +77,19 @@ export default function RegisterPage() {
         <ThemeToggle />
       </div>
 
-      <Card className="relative z-10 w-full max-w-lg border bg-card/80 backdrop-blur-xl shadow-2xl">
-        <CardHeader className="text-center pb-2">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl shadow-indigo-500/25">
-            <Building2 className="h-7 w-7 text-white" />
-          </div>
-          <CardTitle className="text-2xl font-bold gradient-text">
-            Registrasi Koperasi
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, type: "spring", bounce: 0.4 }}
+        className="relative z-10 w-full max-w-lg"
+      >
+        <Card className="w-full border-none shadow-2xl bg-background/60 backdrop-blur-xl">
+          <CardHeader className="text-center pb-2">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl shadow-indigo-500/25">
+              <Building2 className="h-7 w-7 text-white" />
+            </div>
+            <CardTitle className="text-2xl font-bold">
+              Registrasi Koperasi
           </CardTitle>
           <CardDescription>
             Daftarkan koperasi Anda untuk mulai menggunakan sistem
@@ -161,6 +168,7 @@ export default function RegisterPage() {
           </p>
         </CardFooter>
       </Card>
+      </motion.div>
     </div>
   );
 }
