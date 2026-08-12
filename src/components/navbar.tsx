@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Building, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,20 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import Swal from "sweetalert2";
 
 export function Navbar() {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [fotoProfil, setFotoProfil] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/profile')
+      .then(res => res.json())
+      .then(data => {
+        if (data.fotoProfil) {
+          setFotoProfil(data.fotoProfil);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const organisasiNama = (session as any)?.organisasiNama || "Loading...";
   const username = session?.user?.name || session?.user?.email || "User";
@@ -53,8 +65,8 @@ export function Navbar() {
                   {username}
                 </span>
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 overflow-hidden">
-                  {(session as any)?.user?.fotoProfil ? (
-                    <img src={(session as any).user.fotoProfil} alt="Profile" className="w-full h-full object-cover" />
+                  {fotoProfil ? (
+                    <img src={fotoProfil} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     initial
                   )}
@@ -65,8 +77,8 @@ export function Navbar() {
               <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-4 border-b">
                 <div className="flex items-center gap-4">
                   <div className="h-16 w-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-md overflow-hidden">
-                    {(session as any)?.user?.fotoProfil ? (
-                      <img src={(session as any).user.fotoProfil} alt="Profile" className="w-full h-full object-cover" />
+                    {fotoProfil ? (
+                      <img src={fotoProfil} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
                       initial
                     )}
@@ -109,10 +121,8 @@ export function Navbar() {
                             body: JSON.stringify({ fotoProfil: base64 }),
                           });
                           if (res.ok) {
-                            await update({ fotoProfil: base64 });
-                            Swal.fire({ title: "Berhasil", text: "Foto profil berhasil diubah", icon: "success", timer: 1500, showConfirmButton: false }).then(() => {
-                              window.location.reload();
-                            });
+                            setFotoProfil(base64 as string);
+                            Swal.fire({ title: "Berhasil", text: "Foto profil berhasil diubah", icon: "success", timer: 1500, showConfirmButton: false });
                           } else {
                             Swal.fire({ title: "Gagal", text: "Gagal mengunggah foto profil.", icon: "error" });
                           }

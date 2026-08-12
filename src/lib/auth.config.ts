@@ -5,22 +5,17 @@ export const authConfig = {
   trustHost: true,
   providers: [],
   callbacks: {
-    async jwt({ token, user, trigger, session }: any) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
         token.organisasiId = user.organisasiId;
         token.organisasiNama = user.organisasiNama;
-        token.fotoProfil = user.fotoProfil;
-      }
-      if (trigger === "update" && session?.fotoProfil) {
-        token.fotoProfil = session.fotoProfil;
       }
       return token;
     },
     async session({ session, token }: any) {
       if (token && session.user) {
         session.user.id = token.id as string;
-        (session.user as any).fotoProfil = token.fotoProfil;
         (session.user as any).organisasiId = token.organisasiId;
         (session.user as any).organisasiNama = token.organisasiNama;
         
