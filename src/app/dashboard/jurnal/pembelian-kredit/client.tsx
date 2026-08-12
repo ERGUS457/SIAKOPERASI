@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Combobox } from "@/components/ui/combobox";
 import { Label } from "@/components/ui/label";
 import { DynamicFormRows, JurnalRow } from "@/components/dynamic-form-rows";
 import { toast } from "sonner";
@@ -130,19 +131,21 @@ export default function ClientPage({ akunOptions, tokoPembelian, anggota, transa
                   </Select>
 
                   {(sumberType && sumberType !== "LAINNYA") && (
-                    <Select value={sumberId} onValueChange={setSumberId}>
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Pilih Kontak" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {sumberType === "TOKO_PEMBELIAN" && tokoPembelian?.map((t: any) => (
-                          <SelectItem key={t.id} value={t.id}>{t.namaToko}</SelectItem>
-                        ))}
-                        {sumberType === "ANGGOTA" && anggota?.map((a: any) => (
-                          <SelectItem key={a.id} value={a.id}>{a.nama}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex-1">
+                      <Combobox
+                        options={
+                          sumberType === "TOKO_PEMBELIAN"
+                            ? (tokoPembelian || []).map((t: any) => ({ label: t.namaToko, value: t.id }))
+                            : sumberType === "ANGGOTA"
+                            ? (anggota || []).map((a: any) => ({ label: a.nama, value: a.id }))
+                            : []
+                        }
+                        value={sumberId}
+                        onChange={setSumberId}
+                        placeholder="Pilih Kontak / Pemasok"
+                        searchPlaceholder="Cari kontak/pemasok..."
+                      />
+                    </div>
                   )}
                 </div>
               </div>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Combobox } from "@/components/ui/combobox";
 import { createPinjaman, bayarAngsuran, deletePinjaman } from "./actions";
 import { formatRupiah } from "@/lib/utils";
 
@@ -140,17 +141,15 @@ export default function PinjamanClient({ data, anggotaList }: { data: any[], ang
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="anggotaId" className="text-right">Anggota</Label>
-              <select
-                id="anggotaId"
-                className="col-span-3 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={formData.anggotaId || ''}
-                onChange={(e) => setFormData({ ...formData, anggotaId: e.target.value })}
-              >
-                <option value="">Pilih Anggota</option>
-                {anggotaList.map((a: any) => (
-                  <option key={a.id} value={a.id}>{a.nama}</option>
-                ))}
-              </select>
+              <div className="col-span-3">
+                <Combobox
+                  options={(anggotaList || []).map((a: any) => ({ label: a.nama, value: a.id }))}
+                  value={formData.anggotaId || ''}
+                  onChange={(val) => setFormData({ ...formData, anggotaId: val })}
+                  placeholder="Pilih Anggota..."
+                  searchPlaceholder="Cari anggota..."
+                />
+              </div>
             </div>
             
             <div className="grid grid-cols-4 items-center gap-4">
