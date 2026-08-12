@@ -13,7 +13,7 @@ export async function createAkun(data: {
   deskripsi?: string;
 }) {
   const session = await auth();
-  if (!session?.organisasiId) throw new Error("Unauthorized");
+  if (!session?.organisasiId) return { error: "Unauthorized" };
 
   // Validate kodeAkun is unique
   const existing = await prisma.akun.findFirst({
@@ -24,7 +24,7 @@ export async function createAkun(data: {
   });
 
   if (existing) {
-    throw new Error("Kode Akun sudah digunakan");
+    return { error: "Kode Akun sudah digunakan" };
   }
 
   const akun = await prisma.akun.create({
@@ -35,7 +35,7 @@ export async function createAkun(data: {
   });
 
   revalidatePath("/dashboard/akun");
-  return akun;
+  return { data: akun };
 }
 
 export async function updateAkun(
@@ -49,7 +49,7 @@ export async function updateAkun(
   }
 ) {
   const session = await auth();
-  if (!session?.organisasiId) throw new Error("Unauthorized");
+  if (!session?.organisasiId) return { error: "Unauthorized" };
 
   // Validate unique kodeAkun if changed
   const existing = await prisma.akun.findFirst({
@@ -61,7 +61,7 @@ export async function updateAkun(
   });
 
   if (existing) {
-    throw new Error("Kode Akun sudah digunakan");
+    return { error: "Kode Akun sudah digunakan" };
   }
 
   const akun = await prisma.akun.update({
@@ -73,21 +73,26 @@ export async function updateAkun(
   });
 
   revalidatePath("/dashboard/akun");
-  return akun;
+  return { data: akun };
 }
 
 export async function deleteAkun(id: string) {
   const session = await auth();
-  if (!session?.organisasiId) throw new Error("Unauthorized");
+  if (!session?.organisasiId) return { error: "Unauthorized" };
 
-  await prisma.akun.delete({
-    where: {
-      id,
-      organisasiId: session.organisasiId,
-    },
-  });
+  try {
+    await prisma.akun.delete({
+      where: {
+        id,
+        organisasiId: session.organisasiId,
+      },
+    });
 
-  revalidatePath("/dashboard/akun");
+    revalidatePath("/dashboard/akun");
+    return { success: true };
+  } catch (err: any) {
+    return { error: "Gagal menghapus akun" };
+  }
 }
 
 export async function importAkun(
@@ -100,33 +105,37 @@ export async function importAkun(
   }[]
 ) {
   const session = await auth();
-  if (!session?.organisasiId) throw new Error("Unauthorized");
+  if (!session?.organisasiId) return { error: "Unauthorized" };
 
-  // Get all existing accounts to avoid duplicates in this transaction
-  const existingAccounts = await prisma.akun.findMany({
-    where: { organisasiId: session.organisasiId },
-    select: { kodeAkun: true },
-  });
-
-  const existingKodes = new Set(existingAccounts.map((a) => a.kodeAkun));
-  
-  const toCreate = [];
-  for (const item of data) {
-    if (!existingKodes.has(item.kodeAkun)) {
-      toCreate.push({
-        ...item,
-        organisasiId: session.organisasiId,
-      });
-      existingKodes.add(item.kodeAkun);
-    }
-  }
-
-  if (toCreate.length > 0) {
-    await prisma.akun.createMany({
-      data: toCreate,
+  try {
+    // Get all existing accounts to avoid duplicates in this transaction
+    const existingAccounts = await prisma.akun.findMany({
+      where: { organisasiId: session.organisasiId },
+      select: { kodeAkun: true },
     });
-    revalidatePath("/dashboard/akun");
-  }
 
-  return { imported: toCreate.length };
+    const existingKodes = new Set(existingAccounts.map((a) => a.kodeAkun));
+    
+    const toCreate = [];
+    for (const item of data) {
+      if (!existingKodes.has(item.kodeAkun)) {
+        toCreate.push({
+          ...item,
+          organisasiId: session.organisasiId,
+        });
+        existingKodes.add(item.kodeAkun);
+      }
+    }
+
+    if (toCreate.length > 0) {
+      await prisma.akun.createMany({
+        data: toCreate,
+      });
+      revalidatePath("/dashboard/akun");
+    }
+
+    return { imported: toCreate.length };
+  } catch (err: any) {
+    return { error: "Gagal mengimport data akun" };
+  }
 }

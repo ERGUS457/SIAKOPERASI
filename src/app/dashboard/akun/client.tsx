@@ -31,7 +31,7 @@ interface AkunClientProps {
 }
 
 export default function AkunClient({ initialData }: AkunClientProps) {
-  const [data, setData] = useState<Akun[]>(initialData);
+  const data = initialData;
   const [search, setSearch] = useState("");
   const [kategoriFilter, setKategoriFilter] = useState<string>("ALL");
 
@@ -49,9 +49,6 @@ export default function AkunClient({ initialData }: AkunClientProps) {
   const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // If there's no useToast, we can use simple alert, but Shadcn project usually has it.
-  // I will check if use-toast exists, if not, I'll fallback to alert or simple toast.
 
   const filteredData = data.filter((item) => {
     const matchSearch =
@@ -105,12 +102,18 @@ export default function AkunClient({ initialData }: AkunClientProps) {
     startTransition(async () => {
       try {
         if (editingId) {
-          const updated = await updateAkun(editingId, formData);
-          setData((prev) => prev.map((a) => (a.id === editingId ? updated : a)));
+          const res = await updateAkun(editingId, formData);
+          if (res?.error) {
+            alert(res.error);
+            return;
+          }
           setIsDialogOpen(false);
         } else {
-          const created = await createAkun(formData);
-          setData((prev) => [...prev, created]);
+          const res = await createAkun(formData);
+          if (res?.error) {
+            alert(res.error);
+            return;
+          }
           setIsDialogOpen(false);
         }
       } catch (error: any) {
@@ -123,8 +126,10 @@ export default function AkunClient({ initialData }: AkunClientProps) {
     if (!confirm("Yakin ingin menghapus akun ini?")) return;
     startTransition(async () => {
       try {
-        await deleteAkun(id);
-        setData((prev) => prev.filter((a) => a.id !== id));
+        const res = await deleteAkun(id);
+        if (res?.error) {
+          alert(res.error);
+        }
       } catch (error: any) {
         alert(error.message);
       }
@@ -180,7 +185,11 @@ export default function AkunClient({ initialData }: AkunClientProps) {
         startTransition(async () => {
           try {
             const res = await importAkun(toImport);
-            alert(`Berhasil import ${res.imported} akun baru.`);
+            if (res?.error) {
+              alert(res.error);
+              return;
+            }
+            alert(`Berhasil import ${res?.imported} akun baru.`);
             window.location.reload(); // simple reload to fetch new data
           } catch (err: any) {
             alert("Gagal import: " + err.message);
