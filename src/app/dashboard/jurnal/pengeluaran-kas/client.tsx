@@ -110,7 +110,7 @@ export default function ClientPage({ akunOptions, tokoPembelian, tokoPenjualan, 
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-5xl lg:max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Tambah Pengeluaran Kas</DialogTitle>
             <DialogDescription>

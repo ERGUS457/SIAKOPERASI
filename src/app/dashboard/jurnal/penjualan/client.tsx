@@ -101,7 +101,7 @@ export default function ClientPage({ akunOptions, tokoPenjualan, anggota, transa
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-5xl lg:max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Tambah Penjualan Kredit</DialogTitle>
             <DialogDescription>
