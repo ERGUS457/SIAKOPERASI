@@ -104,7 +104,7 @@ export default function PinjamanClient({ data, anggotaList }: { data: any[], ang
       <div className="flex justify-end mb-4">
         <Button onClick={() => setIsDialogOpen(true)}>Tambah Pinjaman</Button>
       </div>
-      <DataTable columns={columns} data={data} searchKey="anggota.nama" />
+      <DataTable columns={columns} data={data} searchKey="anggota.nama" exportFilename="Data_Pinjaman" />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>

@@ -126,6 +126,7 @@ export function PengurusClient({ data }: PengurusClientProps) {
         searchPlaceholder="Cari pengurus..."
         onAdd={handleAdd}
         addLabel="Tambah Pengurus"
+        exportFilename="Daftar_Pengurus"
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -123,6 +123,7 @@ export function TokoPembelianClient({ data }: TokoPembelianClientProps) {
         searchPlaceholder="Cari toko pembelian..."
         onAdd={handleAdd}
         addLabel="Tambah Toko"
+        exportFilename="Toko_Pembelian"
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

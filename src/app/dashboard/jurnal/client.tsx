@@ -140,6 +140,7 @@ export default function JurnalClient({ data }: { data: any[] }) {
       columns={columns}
       data={data}
       searchKey="nomorTransaksi"
+      exportFilename="Semua_Jurnal"
     />
   );
 }

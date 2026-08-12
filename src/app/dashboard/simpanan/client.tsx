@@ -100,7 +100,7 @@ export default function SimpananClient({ data, akunKas, akunSimpanan }: { data: 
 
   return (
     <>
-      <DataTable columns={columns} data={data} searchKey="anggota.nama" />
+      <DataTable columns={columns} data={data} searchKey="anggota.nama" exportFilename="Data_Simpanan" />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">

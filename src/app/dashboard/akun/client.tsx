@@ -292,7 +292,7 @@ export default function AkunClient({ initialData }: AkunClientProps) {
         </div>
       </div>
 
-      <DataTable data={filteredData} columns={columns} />
+      <DataTable data={filteredData} columns={columns} exportFilename="Chart_of_Accounts" />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">

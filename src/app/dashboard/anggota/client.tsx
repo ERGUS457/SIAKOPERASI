@@ -135,6 +135,7 @@ export function AnggotaClient({ data }: AnggotaClientProps) {
         searchPlaceholder="Cari anggota..."
         onAdd={handleAdd}
         addLabel="Tambah Anggota"
+        exportFilename="Daftar_Anggota"
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
