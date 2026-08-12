@@ -68,10 +68,11 @@ export function Combobox({
                     onChange(option.value);
                     setOpen(false);
                   }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                  onClick={() => {
+                    onChange(option.value);
+                    setOpen(false);
                   }}
+
                   className={cn(
                     "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                   )}
