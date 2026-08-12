@@ -10,7 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import Swal from "sweetalert2";
 
 export function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const organisasiNama = (session as any)?.organisasiNama || "Loading...";
@@ -109,6 +109,7 @@ export function Navbar() {
                             body: JSON.stringify({ fotoProfil: base64 }),
                           });
                           if (res.ok) {
+                            await update({ fotoProfil: base64 });
                             Swal.fire({ title: "Berhasil", text: "Foto profil berhasil diubah", icon: "success", timer: 1500, showConfirmButton: false }).then(() => {
                               window.location.reload();
                             });
