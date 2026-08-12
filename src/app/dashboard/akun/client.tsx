@@ -198,6 +198,10 @@ export default function AkunClient({ initialData }: AkunClientProps) {
             if (fileInputRef.current) fileInputRef.current.value = "";
           }
         });
+      } catch (err: any) {
+        alert("File excel tidak valid: " + err.message);
+        setLoading(false);
+      }
     };
     reader.readAsBinaryString(file);
   };
