@@ -7,9 +7,10 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'SIA Koperasi — Sistem Informasi Akuntansi',
-  description: 'Solusi lengkap untuk mengelola keuangan koperasi Anda dengan aman, cepat, dan akurat.',
+  title: 'SIMPEL-KU — Sistem Penyusunan Laporan Keuangan Terpadu',
+  description: 'Solusi lengkap untuk menyusun laporan keuangan koperasi Anda dengan aman, cepat, dan akurat.',
 };
+
 
 export default function RootLayout({
   children,

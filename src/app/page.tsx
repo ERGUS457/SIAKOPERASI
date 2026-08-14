@@ -67,7 +67,7 @@ const faqs = [
   },
   {
     question: "Apakah bisa digunakan di HP?",
-    answer: "SIA Koperasi adalah aplikasi berbasis web (PWA) yang sudah didesain responsif. Anda dapat membukanya melalui browser di HP, tablet, maupun laptop dengan tampilan yang menyesuaikan layar."
+    answer: "SIMPEL-KU adalah aplikasi berbasis web (PWA) yang sudah didesain responsif. Anda dapat membukanya melalui browser di HP, tablet, maupun laptop dengan tampilan yang menyesuaikan layar."
   }
 ];
 
@@ -81,7 +81,7 @@ export default function LandingPage() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <span className="text-lg font-bold gradient-text">SIA Koperasi</span>
+            <span className="text-lg font-bold gradient-text">SIMPEL-KU</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-8">
@@ -386,7 +386,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="w-full border-t py-8 bg-muted/50">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} SIA Koperasi — Sistem Informasi Akuntansi. All rights reserved.
+          &copy; {new Date().getFullYear()} SIMPEL-KU — Sistem Penyusunan Laporan Keuangan Terpadu. All rights reserved.
         </div>
       </footer>
     </div>
