@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
@@ -108,7 +108,7 @@ export default function LoginPage() {
               <Input
                 id="password" name="password" type="password" required
                 value={formData.password} onChange={handleChange}
-                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                placeholder="Masukkan password"
                 className="h-11"
               />
             </div>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -142,11 +142,11 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="h-11" />
+                <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} placeholder="Masukkan password" className="h-11" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-                <Input id="confirmPassword" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="h-11" />
+                <Input id="confirmPassword" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} placeholder="Ulangi password" className="h-11" />
               </div>
             </div>
 
