@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BookOpen, Users, FolderTree, BookText, FileBarChart, Building2, ArrowRight, Sparkles, Shield, Zap, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const features = [
   {
@@ -91,6 +92,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link href="/login">
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Masuk</Button>
             </Link>
