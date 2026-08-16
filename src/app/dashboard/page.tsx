@@ -1,17 +1,30 @@
-﻿import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah } from "@/lib/utils";
-import { ArrowDownRight, ArrowUpRight, DollarSign, CreditCard, Activity, Users } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  DollarSign,
+  CreditCard,
+  Activity,
+  Users,
+  FileText,
+  TrendingUp,
+  PlusCircle,
+} from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardPage() {
   const session = await auth();
-  
+
   // @ts-ignore
   const organisasiId = session?.organisasiId;
 
   if (!organisasiId) {
-    return <div>Silakan login ulang.</div>;
+    return <div className="p-6">Silakan login ulang.</div>;
   }
 
   // Ambil saldo dari Akun
@@ -27,15 +40,16 @@ export default async function DashboardPage() {
   });
 
   let totalAset = 0;
+  let totalAsetLancar = 0;
   let totalKas = 0;
   let totalPiutang = 0;
   let totalKewajiban = 0;
+  let totalHutangLancar = 0;
 
   akunList.forEach((akun) => {
-    // Hitung saldo
     let totalDebit = 0;
     let totalKredit = 0;
-    
+
     akun.detailJurnal.forEach((dj) => {
       if (dj.posisi === "DEBIT") totalDebit += dj.nominal;
       else totalKredit += dj.nominal;
@@ -49,15 +63,24 @@ export default async function DashboardPage() {
     }
 
     // Klasifikasikan
-    if (akun.kategori === "ASET_LANCAR" || akun.kategori === "ASET_TETAP") {
+    if (akun.kategori === "ASET_LANCAR") {
+      totalAsetLancar += saldo;
+      totalAset += saldo;
+    } else if (akun.kategori === "ASET_TETAP") {
       totalAset += saldo;
     }
-    
-    if (akun.kategori === "KEWAJIBAN_JANGKA_PENDEK" || akun.kategori === "KEWAJIBAN_JANGKA_PANJANG") {
+
+    if (akun.kategori === "KEWAJIBAN_JANGKA_PENDEK") {
+      totalHutangLancar += saldo;
+      totalKewajiban += saldo;
+    } else if (akun.kategori === "KEWAJIBAN_JANGKA_PANJANG") {
       totalKewajiban += saldo;
     }
 
-    if (akun.namaAkun.toLowerCase().includes("kas") || akun.namaAkun.toLowerCase().includes("bank")) {
+    if (
+      akun.namaAkun.toLowerCase().includes("kas") ||
+      akun.namaAkun.toLowerCase().includes("bank")
+    ) {
       totalKas += saldo;
     }
 
@@ -67,8 +90,46 @@ export default async function DashboardPage() {
   });
 
   const totalAnggota = await prisma.anggota.count({
-    where: { organisasiId }
+    where: { organisasiId },
   });
+
+  // Ambil 5 Transaksi Jurnal Terbaru
+  const recentTransactions = await prisma.transaksi.findMany({
+    where: { organisasiId },
+    orderBy: { tanggal: "desc" },
+    take: 5,
+    include: {
+      detailJurnal: true,
+      anggota: true,
+      tokoPembelian: true,
+      tokoPenjualan: true,
+    },
+  });
+
+  // Hitung Rasio Keuangan
+  const currentRatio =
+    totalHutangLancar > 0 ? (totalAsetLancar / totalHutangLancar) * 100 : totalAsetLancar > 0 ? 100 : 0;
+
+  const cashRatio =
+    totalHutangLancar > 0 ? (totalKas / totalHutangLancar) * 100 : totalKas > 0 ? 100 : 0;
+
+  const debtToAssetRatio =
+    totalAset > 0 ? (totalKewajiban / totalAset) * 100 : 0;
+
+  const getJenisJurnalBadge = (jenis: string) => {
+    switch (jenis) {
+      case "PEMBELIAN_KREDIT":
+        return <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-200">Pembelian Kredit</Badge>;
+      case "PENJUALAN":
+        return <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-200">Penjualan</Badge>;
+      case "PENERIMAAN_KAS":
+        return <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-200">Penerimaan Kas</Badge>;
+      case "PENGELUARAN_KAS":
+        return <Badge variant="outline" className="bg-rose-500/10 text-rose-600 border-rose-200">Pengeluaran Kas</Badge>;
+      default:
+        return <Badge variant="outline" className="bg-purple-500/10 text-purple-600 border-purple-200">Jurnal Umum</Badge>;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -81,56 +142,56 @@ export default async function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {/* Total Aset */}
-        <Card className="bg-gradient-to-br from-primary/10 via-background to-background border-primary/20 shadow-sm">
+        <Card className="bg-gradient-to-br from-indigo-500/10 via-background to-background border-indigo-500/20 shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Aset</CardTitle>
-            <div className="rounded-full bg-primary/20 p-2 text-primary">
+            <div className="rounded-full bg-indigo-500/20 p-2 text-indigo-600">
               <DollarSign className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatRupiah(totalAset)}</div>
-            <p className="text-xs text-muted-foreground mt-1 flex items-center text-emerald-500">
+            <p className="text-xs text-muted-foreground mt-1 flex items-center text-emerald-600 font-medium">
               <ArrowUpRight className="mr-1 h-4 w-4" />
-              +2.1% dari bulan lalu
+              Total nilai aset usaha
             </p>
           </CardContent>
         </Card>
 
         {/* Total Kas & Bank */}
-        <Card className="shadow-sm">
+        <Card className="shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Kas & Bank (Likuiditas)</CardTitle>
-            <div className="rounded-full bg-emerald-500/20 p-2 text-emerald-500">
+            <div className="rounded-full bg-emerald-500/20 p-2 text-emerald-600">
               <Activity className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatRupiah(totalKas)}</div>
-            <p className="text-xs text-muted-foreground mt-1 text-emerald-500">
-              Dana tersedia untuk operasional
+            <p className="text-xs text-muted-foreground mt-1 text-emerald-600 font-medium">
+              Dana siap pakai operasional
             </p>
           </CardContent>
         </Card>
 
         {/* Total Piutang */}
-        <Card className="shadow-sm">
+        <Card className="shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Piutang</CardTitle>
-            <div className="rounded-full bg-amber-500/20 p-2 text-amber-500">
+            <div className="rounded-full bg-amber-500/20 p-2 text-amber-600">
               <CreditCard className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatRupiah(totalPiutang)}</div>
             <p className="text-xs text-muted-foreground mt-1">
-              Piutang anggota & usaha
+              Piutang anggota & pihak luar
             </p>
           </CardContent>
         </Card>
 
         {/* Kewajiban */}
-        <Card className="shadow-sm">
+        <Card className="shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Kewajiban</CardTitle>
             <div className="rounded-full bg-destructive/20 p-2 text-destructive">
@@ -144,12 +205,12 @@ export default async function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        
+
         {/* Total Anggota */}
-        <Card className="shadow-sm">
+        <Card className="shadow-xs">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Total Anggota Aktif</CardTitle>
-            <div className="rounded-full bg-blue-500/20 p-2 text-blue-500">
+            <div className="rounded-full bg-blue-500/20 p-2 text-blue-600">
               <Users className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -162,40 +223,176 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-6">
-        <Card className="col-span-4 shadow-sm">
-          <CardHeader>
-            <CardTitle>Aktivitas Jurnal Terbaru</CardTitle>
-            <CardDescription>
-              Transkasi keuangan yang baru saja dicatat.
-            </CardDescription>
+      {/* AKTIVITAS JURNAL TERBARU & RASIO KEuangan */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mt-6">
+        {/* AKTIVITAS JURNAL TERBARU */}
+        <Card className="col-span-4 shadow-xs">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-indigo-600" />
+                Aktivitas Jurnal Terbaru
+              </CardTitle>
+              <CardDescription>
+                Transaksi keuangan yang baru saja dicatat dalam sistem.
+              </CardDescription>
+            </div>
+            <Link href="/dashboard/jurnal/umum">
+              <Button size="sm" variant="outline" className="text-xs gap-1">
+                <PlusCircle className="h-3.5 w-3.5" />
+                Tambah Jurnal
+              </Button>
+            </Link>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">
-                Menunggu data transaksi... Modul jurnal belum diimplementasi.
+            {recentTransactions.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground space-y-3">
+                <FileText className="h-10 w-10 mx-auto text-muted-foreground/40" />
+                <p className="text-sm">Belum ada transaksi jurnal yang dicatat.</p>
+                <Link href="/dashboard/jurnal/penerimaan-kas">
+                  <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                    Buat Transaksi Pertama
+                  </Button>
+                </Link>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-3">
+                {recentTransactions.map((tx) => {
+                  const nominalTotal = tx.detailJurnal
+                    .filter((d) => d.posisi === "DEBIT")
+                    .reduce((sum, d) => sum + d.nominal, 0);
+
+                  const kontakNama =
+                    tx.anggota?.nama ||
+                    tx.tokoPembelian?.namaToko ||
+                    tx.tokoPenjualan?.namaToko ||
+                    "-";
+
+                  return (
+                    <div
+                      key={tx.id}
+                      className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/40 transition-colors"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-sm text-foreground">
+                            {tx.nomorTransaksi}
+                          </span>
+                          {getJenisJurnalBadge(tx.jenisJurnal)}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {tx.keterangan || "Tidak ada keterangan"} &bull;{" "}
+                          <span className="font-medium text-gray-700 dark:text-gray-300">
+                            {kontakNama}
+                          </span>
+                        </p>
+                        <p className="text-[11px] text-muted-foreground/70">
+                          {new Date(tx.tanggal).toLocaleDateString("id-ID", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-bold text-sm text-indigo-600 dark:text-indigo-400">
+                          {formatRupiah(nominalTotal)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
-        
-        <Card className="col-span-3 shadow-sm">
+
+        {/* RASIO KEUANGAN */}
+        <Card className="col-span-3 shadow-xs">
           <CardHeader>
-            <CardTitle>Rasio Keuangan</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-emerald-600" />
+              Rasio Keuangan
+            </CardTitle>
             <CardDescription>
-              Indikator kesehatan usaha.
+              Indikator kesehatan & kemampuan finansial usaha.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span>Current Ratio (Aset Lancar / Hutang Lancar)</span>
-                  <span className="font-bold">--</span>
+          <CardContent className="space-y-6">
+            {/* Current Ratio */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <div>
+                  <span className="font-semibold">Rasio Lancar (Current Ratio)</span>
+                  <p className="text-[11px] text-muted-foreground">
+                    Aset Lancar vs Hutang Lancar
+                  </p>
                 </div>
-                <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
-                  <div className="h-full bg-primary w-[0%]" />
+                <span className="font-bold text-indigo-600 text-base">
+                  {currentRatio > 0 ? `${currentRatio.toFixed(1)}%` : "100%"}
+                </span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full"
+                  style={{ width: `${Math.min(currentRatio, 100)}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[11px]">
+                <span className="text-muted-foreground">Kemampuan bayar hutang lancar</span>
+                <span className="font-medium text-emerald-600">
+                  {currentRatio >= 100 ? "Sehat" : "Perlu Perhatian"}
+                </span>
+              </div>
+            </div>
+
+            {/* Cash Ratio */}
+            <div className="space-y-2 pt-2 border-t">
+              <div className="flex items-center justify-between text-sm">
+                <div>
+                  <span className="font-semibold">Rasio Kas (Cash Ratio)</span>
+                  <p className="text-[11px] text-muted-foreground">
+                    Kas & Bank vs Hutang Jangka Pendek
+                  </p>
                 </div>
+                <span className="font-bold text-emerald-600 text-base">
+                  {cashRatio > 0 ? `${cashRatio.toFixed(1)}%` : "100%"}
+                </span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
+                  style={{ width: `${Math.min(cashRatio, 100)}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[11px]">
+                <span className="text-muted-foreground">Ketersediaan dana cepat</span>
+                <span className="font-medium text-emerald-600">Likuid</span>
+              </div>
+            </div>
+
+            {/* Debt to Asset Ratio */}
+            <div className="space-y-2 pt-2 border-t">
+              <div className="flex items-center justify-between text-sm">
+                <div>
+                  <span className="font-semibold">Rasio Hutang (Solvabilitas)</span>
+                  <p className="text-[11px] text-muted-foreground">
+                    Total Hutang vs Total Aset
+                  </p>
+                </div>
+                <span className="font-bold text-amber-600 text-base">
+                  {debtToAssetRatio > 0 ? `${debtToAssetRatio.toFixed(1)}%` : "0%"}
+                </span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-secondary overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-500 to-rose-500 rounded-full"
+                  style={{ width: `${Math.min(debtToAssetRatio, 100)}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[11px]">
+                <span className="text-muted-foreground">Persentase aset terikat hutang</span>
+                <span className="font-medium text-emerald-600">Aman</span>
               </div>
             </div>
           </CardContent>
