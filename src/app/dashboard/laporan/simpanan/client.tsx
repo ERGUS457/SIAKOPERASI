@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { DataTable } from "@/components/data-table";
@@ -73,7 +73,7 @@ export default function LaporanSimpananClient({ data }: { data: any[] }) {
           data={data} 
           searchKey="anggota.nama" 
           searchPlaceholder="Cari nama anggota..."
-          exportFilename="Laporan_Simpanan_Koperasi"
+          exportFilename="Laporan_Simpanan_Usaha"
         />
       </div>
     </div>

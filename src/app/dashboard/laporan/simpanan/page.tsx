@@ -1,9 +1,9 @@
-import { auth } from "@/lib/auth";
+﻿import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import LaporanSimpananClient from "./client";
 
 export const metadata = {
-  title: "Laporan Simpanan - SIA Koperasi",
+  title: "Laporan Simpanan - SIA Usaha",
 };
 
 export default async function LaporanSimpananPage() {

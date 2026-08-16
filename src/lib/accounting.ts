@@ -1,5 +1,5 @@
-// ============================================================
-// Accounting Logic — Logika Perhitungan Akuntansi
+﻿// ============================================================
+// Accounting Logic â€” Logika Perhitungan Akuntansi
 // ============================================================
 // 
 // Double-Entry Bookkeeping Rules:
@@ -8,11 +8,11 @@
 // 3. Akun dengan saldo normal KREDIT bertambah di sisi kredit
 //
 // Kategori Akun & Saldo Normal:
-// - Aset (Lancar & Tetap)      → Saldo Normal: DEBIT
-// - Kewajiban (Jk Pendek & Panjang) → Saldo Normal: KREDIT  
-// - Modal                       → Saldo Normal: KREDIT
-// - Pendapatan                  → Saldo Normal: KREDIT
-// - Beban                       → Saldo Normal: DEBIT
+// - Aset (Lancar & Tetap)      â†’ Saldo Normal: DEBIT
+// - Kewajiban (Jk Pendek & Panjang) â†’ Saldo Normal: KREDIT  
+// - Modal                       â†’ Saldo Normal: KREDIT
+// - Pendapatan                  â†’ Saldo Normal: KREDIT
+// - Beban                       â†’ Saldo Normal: DEBIT
 // ============================================================
 
 export type KategoriAkun =
@@ -30,8 +30,8 @@ export type SaldoNormal = "DEBIT" | "KREDIT";
  * Menentukan saldo normal berdasarkan kategori akun
  * 
  * Aturan akuntansi:
- * - Aset & Beban → Saldo normal DEBIT (bertambah di debit)
- * - Kewajiban, Modal, Pendapatan → Saldo normal KREDIT (bertambah di kredit)
+ * - Aset & Beban â†’ Saldo normal DEBIT (bertambah di debit)
+ * - Kewajiban, Modal, Pendapatan â†’ Saldo normal KREDIT (bertambah di kredit)
  */
 export function getSaldoNormal(kategori: KategoriAkun): SaldoNormal {
   switch (kategori) {
@@ -152,7 +152,7 @@ export const KATEGORI_AKUN_LABELS: Record<KategoriAkun, string> = {
 };
 
 /**
- * Seed data: Akun-akun standar koperasi Indonesia (SAK ETAP)
+ * Seed data: Akun-akun standar usaha Indonesia (SAK ETAP)
  */
 export const DEFAULT_AKUN_LIST = [
   // === ASET LANCAR ===

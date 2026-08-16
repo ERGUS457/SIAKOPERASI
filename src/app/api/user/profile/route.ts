@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
@@ -100,7 +100,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Profil dan data koperasi berhasil diperbarui",
+      message: "Profil dan data usaha berhasil diperbarui",
       user: {
         nama: updatedUser.nama,
         email: updatedUser.email,

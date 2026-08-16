@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
@@ -84,7 +84,7 @@ export default function LoginPage() {
               Selamat Datang
             </CardTitle>
           <CardDescription>
-            Masuk ke akun koperasi Anda
+            Masuk ke akun usaha Anda
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -99,7 +99,7 @@ export default function LoginPage() {
               <Input
                 id="email" name="email" type="email" required
                 value={formData.email} onChange={handleChange}
-                placeholder="admin@koperasi.com"
+                placeholder="admin@usaha.com"
                 className="h-11"
               />
             </div>
@@ -108,7 +108,7 @@ export default function LoginPage() {
               <Input
                 id="password" name="password" type="password" required
                 value={formData.password} onChange={handleChange}
-                placeholder="••••••••"
+                placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                 className="h-11"
               />
             </div>
@@ -125,7 +125,7 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground">
             Belum punya akun?{' '}
             <Link href="/register" className="text-indigo-500 hover:text-indigo-400 font-medium hover:underline">
-              Daftar Koperasi
+              Daftar Usaha
             </Link>
           </p>
         </CardFooter>

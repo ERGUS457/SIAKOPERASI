@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { DEFAULT_AKUN_LIST, getSaldoNormal } from '@/lib/accounting';
@@ -6,10 +6,10 @@ import { DEFAULT_AKUN_LIST, getSaldoNormal } from '@/lib/accounting';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { namaKoperasi, alamat, telepon, namaAdmin, email, username, password } = body;
+    const { namaUsaha, alamat, telepon, namaAdmin, email, username, password } = body;
 
     // Validate required fields
-    if (!namaKoperasi || !namaAdmin || !email || !username || !password) {
+    if (!namaUsaha || !namaAdmin || !email || !username || !password) {
       return NextResponse.json({ error: 'Semua field wajib diisi' }, { status: 400 });
     }
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     // 1. Create Organisasi
     const organisasi = await prisma.organisasi.create({
       data: {
-        nama: namaKoperasi,
+        nama: namaUsaha,
         alamat: alamat || null,
         telepon: telepon || null,
       }

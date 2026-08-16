@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+﻿import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah } from "@/lib/utils";
@@ -75,7 +75,7 @@ export default async function DashboardPage() {
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Dashboard Keuangan</h2>
         <p className="text-muted-foreground mt-1">
-          Ringkasan kondisi keuangan koperasi Anda secara real-time.
+          Ringkasan kondisi keuangan usaha Anda secara real-time.
         </p>
       </div>
 
@@ -156,7 +156,7 @@ export default async function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{totalAnggota} Anggota</div>
             <p className="text-xs text-muted-foreground mt-1">
-              Tergabung dalam koperasi
+              Tergabung dalam usaha
             </p>
           </CardContent>
         </Card>
@@ -183,7 +183,7 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle>Rasio Keuangan</CardTitle>
             <CardDescription>
-              Indikator kesehatan koperasi.
+              Indikator kesehatan usaha.
             </CardDescription>
           </CardHeader>
           <CardContent>

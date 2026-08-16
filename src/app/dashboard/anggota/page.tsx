@@ -1,4 +1,4 @@
-import { getAnggota } from "./actions";
+﻿import { getAnggota } from "./actions";
 import { AnggotaClient } from "./client";
 
 export const metadata = {
@@ -13,7 +13,7 @@ export default async function AnggotaPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Data Anggota</h1>
         <p className="text-muted-foreground">
-          Kelola data anggota organisasi dan koperasi.
+          Kelola data anggota organisasi dan usaha.
         </p>
       </div>
       <AnggotaClient data={data} />

@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+﻿import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import PerubahanModalClient from "./client";
@@ -98,7 +98,7 @@ export default async function PerubahanModalPage({
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Laporan Perubahan Modal</h1>
         <p className="text-muted-foreground">
-          Laporan perubahan ekuitas/modal koperasi.
+          Laporan perubahan ekuitas/modal usaha.
         </p>
       </div>
       <PerubahanModalClient
