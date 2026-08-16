@@ -223,28 +223,28 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* AKTIVITAS JURNAL TERBARU & RASIO KEuangan */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mt-6">
+      {/* AKTIVITAS JURNAL TERBARU & RASIO KEUANGAN */}
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-7 mt-6">
         {/* AKTIVITAS JURNAL TERBARU */}
-        <Card className="col-span-4 shadow-xs">
-          <CardHeader className="flex flex-row items-center justify-between">
+        <Card className="col-span-1 lg:col-span-4 shadow-xs w-full overflow-hidden">
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-4">
             <div>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-indigo-600" />
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <FileText className="h-4 sm:h-5 w-4 sm:w-5 text-indigo-600 shrink-0" />
                 Aktivitas Jurnal Terbaru
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Transaksi keuangan yang baru saja dicatat dalam sistem.
               </CardDescription>
             </div>
-            <Link href="/dashboard/jurnal/umum">
-              <Button size="sm" variant="outline" className="text-xs gap-1">
+            <Link href="/dashboard/jurnal/umum" className="self-start sm:self-auto">
+              <Button size="sm" variant="outline" className="text-xs gap-1 h-8">
                 <PlusCircle className="h-3.5 w-3.5" />
                 Tambah Jurnal
               </Button>
             </Link>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 sm:p-6 pt-0">
             {recentTransactions.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground space-y-3">
                 <FileText className="h-10 w-10 mx-auto text-muted-foreground/40" />
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
                 </Link>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {recentTransactions.map((tx) => {
                   const nominalTotal = tx.detailJurnal
                     .filter((d) => d.posisi === "DEBIT")
@@ -271,18 +271,18 @@ export default async function DashboardPage() {
                   return (
                     <div
                       key={tx.id}
-                      className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/40 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 sm:p-3 rounded-lg border bg-card hover:bg-accent/40 transition-colors overflow-hidden"
                     >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-sm text-foreground">
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <span className="font-semibold text-xs sm:text-sm text-foreground">
                             {tx.nomorTransaksi}
                           </span>
                           {getJenisJurnalBadge(tx.jenisJurnal)}
                         </div>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground truncate">
                           {tx.keterangan || "Tidak ada keterangan"} &bull;{" "}
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
+                          <span className="font-medium text-foreground">
                             {kontakNama}
                           </span>
                         </p>
@@ -294,8 +294,9 @@ export default async function DashboardPage() {
                           })}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <span className="font-bold text-sm text-indigo-600 dark:text-indigo-400">
+                      <div className="text-left sm:text-right shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-border/50 flex justify-between sm:block items-center">
+                        <span className="text-[11px] text-muted-foreground sm:hidden">Total:</span>
+                        <span className="font-bold text-xs sm:text-sm text-indigo-600 dark:text-indigo-400">
                           {formatRupiah(nominalTotal)}
                         </span>
                       </div>
@@ -308,7 +309,7 @@ export default async function DashboardPage() {
         </Card>
 
         {/* RASIO KEUANGAN */}
-        <Card className="col-span-3 shadow-xs">
+        <Card className="col-span-1 lg:col-span-3 shadow-xs w-full overflow-hidden">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-emerald-600" />
