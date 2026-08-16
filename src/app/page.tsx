@@ -91,14 +91,16 @@ export default function LandingPage() {
             <Link href="#faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3">
             <ThemeToggle />
             <Link href="/login">
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Masuk</Button>
+              <Button variant="ghost" size="sm" className="px-2.5 sm:px-3 text-xs sm:text-sm font-medium">
+                Masuk
+              </Button>
             </Link>
             <Link href="/register">
-              <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/25">
-                Daftar Gratis
+              <Button size="sm" className="px-2.5 sm:px-3 text-xs sm:text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-md sm:shadow-lg shadow-indigo-500/25">
+                Daftar <span className="hidden sm:inline">Gratis</span>
               </Button>
             </Link>
           </div>
