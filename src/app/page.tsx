@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ const features = [
   {
     icon: Users,
     title: "Manajemen Simpan Pinjam",
-    description: "Kelola simpanan, pinjaman, dan angsuran anggota koperasi dengan mudah dan otomatis.",
+    description: "Kelola simpanan, pinjaman, dan angsuran anggota usaha dengan mudah dan otomatis.",
     color: "from-purple-500 to-pink-400",
   },
   {
@@ -40,7 +40,7 @@ const features = [
   {
     icon: Building2,
     title: "Multi-Organisasi",
-    description: "Setiap koperasi memiliki ruang kerja terpisah dan privasi data yang terjamin.",
+    description: "Setiap usaha memiliki ruang kerja terpisah dan privasi data yang terjamin.",
     color: "from-indigo-500 to-violet-400",
   },
 ];
@@ -55,15 +55,15 @@ const stats = [
 const faqs = [
   {
     question: "Apakah aplikasi ini gratis?",
-    answer: "Ya, Anda bisa mendaftar dan mencoba fitur dasar kami secara gratis selamanya. Kami juga memiliki paket premium untuk kebutuhan koperasi yang lebih kompleks."
+    answer: "Ya, Anda bisa mendaftar dan mencoba fitur dasar kami secara gratis selamanya. Kami juga memiliki paket premium untuk kebutuhan usaha yang lebih kompleks."
   },
   {
-    question: "Apakah data koperasi saya aman?",
-    answer: "Tentu. Kami menggunakan sistem enkripsi tingkat bank dan database terisolasi untuk setiap koperasi. Data Anda 100% aman dan tidak akan kami bagikan ke pihak ketiga."
+    question: "Apakah data usaha saya aman?",
+    answer: "Tentu. Kami menggunakan sistem enkripsi tingkat bank dan database terisolasi untuk setiap usaha. Data Anda 100% aman dan tidak akan kami bagikan ke pihak ketiga."
   },
   {
     question: "Apakah sistem ini sesuai standar akuntansi Indonesia?",
-    answer: "Sistem kami dibangun berdasarkan pedoman Standar Akuntansi Keuangan Entitas Tanpa Akuntabilitas Publik (SAK ETAP) yang sangat cocok untuk Koperasi."
+    answer: "Sistem kami dibangun berdasarkan pedoman Standar Akuntansi Keuangan Entitas Tanpa Akuntabilitas Publik (SAK ETAP) yang sangat cocok untuk Usaha."
   },
   {
     question: "Apakah bisa digunakan di HP?",
@@ -118,7 +118,7 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
-              Platform Akuntansi Koperasi Terbaik
+              Platform Akuntansi Usaha Terbaik
             </motion.div>
 
             <motion.h1 
@@ -128,7 +128,7 @@ export default function LandingPage() {
               className="max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
             >
               Kelola Keuangan{" "}
-              <span className="gradient-text">Koperasi</span> Anda{" "}
+              <span className="gradient-text">Usaha</span> Anda{" "}
               <span className="gradient-text">dengan Mudah</span>
             </motion.h1>
 
@@ -149,7 +149,7 @@ export default function LandingPage() {
             >
               <Link href="/register">
                 <Button size="lg" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/25 px-8 h-12 text-base">
-                  Mulai Sekarang — Gratis
+                  Mulai Sekarang â€” Gratis
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -194,7 +194,7 @@ export default function LandingPage() {
                 Semua yang Anda Butuhkan dalam <span className="gradient-text">Satu Platform</span>
               </h2>
               <p className="mt-4 text-muted-foreground text-lg">
-                Dirancang khusus untuk kebutuhan koperasi Indonesia dengan standar akuntansi SAK ETAP.
+                Dirancang khusus untuk kebutuhan usaha Indonesia dengan standar akuntansi SAK ETAP.
               </p>
             </motion.div>
 
@@ -266,7 +266,7 @@ export default function LandingPage() {
                     <div className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-pink-500/10 text-pink-500 font-bold">3</div>
                     <div>
                       <h3 className="font-semibold text-lg">Bisa Diakses Darimana Saja</h3>
-                      <p className="text-muted-foreground">Basis Cloud yang aman memungkinkan pengurus koperasi memantau data dari smartphone, kapan saja.</p>
+                      <p className="text-muted-foreground">Basis Cloud yang aman memungkinkan pengurus usaha memantau data dari smartphone, kapan saja.</p>
                     </div>
                   </div>
                 </div>
@@ -278,7 +278,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6 }}
                 className="relative h-[400px] w-full rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 overflow-hidden flex items-center justify-center p-8 shadow-2xl"
               >
-                <div className="absolute inset-0 bg-[url('https://siakoperasi.vercel.app/noise.png')] opacity-20 mix-blend-overlay"></div>
+                <div className="absolute inset-0 bg-[url('https://siausaha.vercel.app/noise.png')] opacity-20 mix-blend-overlay"></div>
                 {/* Mockup Dashboard Simple */}
                 <div className="w-full h-full bg-background/90 backdrop-blur-md rounded-xl border shadow-xl flex flex-col p-4 relative z-10 overflow-hidden">
                   <div className="flex items-center gap-2 border-b pb-3">
@@ -364,7 +364,7 @@ export default function LandingPage() {
               <div className="rounded-3xl bg-background/95 backdrop-blur-xl px-8 py-16 text-center sm:px-16">
                 <Shield className="mx-auto mb-6 h-12 w-12 text-indigo-500" />
                 <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                  Siap Mendigitalisasi Keuangan Koperasi Anda?
+                  Siap Mendigitalisasi Keuangan Usaha Anda?
                 </h2>
                 <p className="mx-auto mt-4 max-w-xl text-muted-foreground text-lg">
                   Daftar sekarang dan nikmati kemudahan pencatatan akuntansi dengan sistem yang aman dan terpercaya.
@@ -386,7 +386,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="w-full border-t py-8 bg-muted/50">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} SIMPEL-KU — Sistem Penyusunan Laporan Keuangan Terpadu. All rights reserved.
+          &copy; {new Date().getFullYear()} SIMPEL-KU â€” Sistem Penyusunan Laporan Keuangan Terpadu. All rights reserved.
         </div>
       </footer>
     </div>

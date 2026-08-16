@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,7 @@ import { motion } from "framer-motion";
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    namaKoperasi: '', alamat: '', telepon: '',
+    namaUsaha: '', alamat: '', telepon: '',
     namaAdmin: '', email: '', username: '',
     password: '', confirmPassword: '',
   });
@@ -42,7 +42,7 @@ export default function RegisterPage() {
         body: JSON.stringify(formData),
       });
       if (res.ok) {
-        await Swal.fire({ title: "Registrasi Berhasil", text: "Akun koperasi Anda berhasil dibuat! Silakan login.", icon: "success", timer: 2000, showConfirmButton: false });
+        await Swal.fire({ title: "Registrasi Berhasil", text: "Akun usaha Anda berhasil dibuat! Silakan login.", icon: "success", timer: 2000, showConfirmButton: false });
         router.push('/login?registered=true');
       } else {
         const data = await res.json();
@@ -89,10 +89,10 @@ export default function RegisterPage() {
               <Building2 className="h-7 w-7 text-white" />
             </div>
             <CardTitle className="text-2xl font-bold">
-              Registrasi Koperasi
+              Registrasi Usaha
           </CardTitle>
           <CardDescription>
-            Daftarkan koperasi Anda untuk mulai menggunakan sistem
+            Daftarkan usaha Anda untuk mulai menggunakan sistem
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -104,8 +104,8 @@ export default function RegisterPage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="namaKoperasi">Nama Koperasi</Label>
-              <Input id="namaKoperasi" name="namaKoperasi" required value={formData.namaKoperasi} onChange={handleChange} placeholder="Koperasi Sejahtera Mandiri" className="h-11" />
+              <Label htmlFor="namaUsaha">Nama Usaha</Label>
+              <Input id="namaUsaha" name="namaUsaha" required value={formData.namaUsaha} onChange={handleChange} placeholder="Usaha Sejahtera Mandiri" className="h-11" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -142,11 +142,11 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} placeholder="••••••••" className="h-11" />
+                <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="h-11" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
-                <Input id="confirmPassword" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} placeholder="••••••••" className="h-11" />
+                <Input id="confirmPassword" name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" className="h-11" />
               </div>
             </div>
 
@@ -155,7 +155,7 @@ export default function RegisterPage() {
               className="w-full h-11 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/25 text-base"
               disabled={loading}
             >
-              {loading ? 'Mendaftar...' : 'Daftar Koperasi'}
+              {loading ? 'Mendaftar...' : 'Daftar Usaha'}
             </Button>
           </form>
         </CardContent>

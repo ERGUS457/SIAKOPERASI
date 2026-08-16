@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,7 +41,7 @@ const menuGroups = [
     ],
   },
   {
-    title: "Koperasi",
+    title: "Usaha",
     items: [
       { title: "Simpanan", href: "/dashboard/simpanan", icon: Landmark },
       { title: "Pinjaman", href: "/dashboard/pinjaman", icon: Wallet },

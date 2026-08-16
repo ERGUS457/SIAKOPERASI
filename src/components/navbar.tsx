@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -91,7 +91,7 @@ export function Navbar() {
         setIsEditProfileOpen(false);
         await Swal.fire({
           title: "Profil Diperbarui",
-          text: "Data pengurus dan koperasi berhasil diperbarui!",
+          text: "Data pengurus dan usaha berhasil diperbarui!",
           icon: "success",
           timer: 1500,
           showConfirmButton: false,
@@ -112,7 +112,7 @@ export function Navbar() {
     }
   };
 
-  const organisasiNama = profileData.organisasiNama || (session as any)?.organisasiNama || "Koperasi";
+  const organisasiNama = profileData.organisasiNama || (session as any)?.organisasiNama || "Usaha";
   const username = profileData.nama || session?.user?.name || session?.user?.email || "Admin";
   const initial = username.charAt(0).toUpperCase();
 
@@ -178,7 +178,7 @@ export function Navbar() {
               </div>
               <div className="p-4 space-y-3">
                 <div className="space-y-1">
-                  <span className="text-xs font-medium text-muted-foreground">Koperasi:</span>
+                  <span className="text-xs font-medium text-muted-foreground">Usaha:</span>
                   <p className="text-sm font-semibold truncate">{organisasiNama}</p>
                 </div>
 
@@ -189,7 +189,7 @@ export function Navbar() {
                     size="sm"
                   >
                     <UserCog className="h-4 w-4" />
-                    Edit Profil & Koperasi
+                    Edit Profil & Usaha
                   </Button>
                 </div>
               </div>
@@ -204,10 +204,10 @@ export function Navbar() {
           <DialogHeader className="p-6 pb-2">
             <DialogTitle className="flex items-center gap-2">
               <UserCog className="h-5 w-5 text-indigo-500" />
-              Edit Profil Admin & Koperasi
+              Edit Profil Admin & Usaha
             </DialogTitle>
             <DialogDescription>
-              Perbarui informasi admin dan identitas koperasi Anda di sini.
+              Perbarui informasi admin dan identitas usaha Anda di sini.
             </DialogDescription>
           </DialogHeader>
 
@@ -284,7 +284,7 @@ export function Navbar() {
                       value={profileData.email}
                       onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                       className="pl-9 h-9 text-sm"
-                      placeholder="email@koperasi.com"
+                      placeholder="email@usaha.com"
                       required
                     />
                   </div>
@@ -305,20 +305,20 @@ export function Navbar() {
                 </div>
               </div>
 
-              {/* Data Koperasi */}
+              {/* Data Usaha */}
               <div className="space-y-3 pt-2">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground border-b pb-1">
-                  Identitas Koperasi
+                  Identitas Usaha
                 </h4>
                 <div className="space-y-1">
-                  <Label className="text-xs">Nama Koperasi</Label>
+                  <Label className="text-xs">Nama Usaha</Label>
                   <div className="relative">
                     <Building className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                       value={profileData.organisasiNama}
                       onChange={(e) => setProfileData({ ...profileData, organisasiNama: e.target.value })}
                       className="pl-9 h-9 text-sm"
-                      placeholder="Nama Koperasi"
+                      placeholder="Nama Usaha"
                       required
                     />
                   </div>
@@ -326,7 +326,7 @@ export function Navbar() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <Label className="text-xs">No. Telepon Koperasi</Label>
+                    <Label className="text-xs">No. Telepon Usaha</Label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -339,7 +339,7 @@ export function Navbar() {
                   </div>
 
                   <div className="space-y-1">
-                    <Label className="text-xs">Alamat Koperasi</Label>
+                    <Label className="text-xs">Alamat Usaha</Label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
@@ -127,10 +127,10 @@ export default function ReportPreviewPage() {
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const {
       namaLaporan,
-      namaKoperasi,
-      alamatKoperasi,
-      teleponKoperasi,
-      emailKoperasi,
+      namaUsaha,
+      alamatUsaha,
+      teleponUsaha,
+      emailUsaha,
       startDate: sDate,
       endDate: eDate,
       tanggalCetak,
@@ -142,15 +142,15 @@ export default function ReportPreviewPage() {
     // === KOP SURAT ===
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text(namaKoperasi?.toUpperCase() || "KOPERASI", 105, 16, { align: "center" });
+    doc.text(namaUsaha?.toUpperCase() || "USAHA", 105, 16, { align: "center" });
 
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    if (alamatKoperasi) doc.text(alamatKoperasi, 105, 22, { align: "center" });
+    if (alamatUsaha) doc.text(alamatUsaha, 105, 22, { align: "center" });
 
     let contactLine = "";
-    if (teleponKoperasi) contactLine += `Telp: ${teleponKoperasi}`;
-    if (emailKoperasi) contactLine += (contactLine ? " | " : "") + `Email: ${emailKoperasi}`;
+    if (teleponUsaha) contactLine += `Telp: ${teleponUsaha}`;
+    if (emailUsaha) contactLine += (contactLine ? " | " : "") + `Email: ${emailUsaha}`;
     if (contactLine) doc.text(contactLine, 105, 27, { align: "center" });
 
     doc.setLineWidth(0.8);
@@ -253,10 +253,10 @@ export default function ReportPreviewPage() {
     const workbook = XLSX.utils.book_new();
     const {
       namaLaporan,
-      namaKoperasi,
-      alamatKoperasi,
-      teleponKoperasi,
-      emailKoperasi,
+      namaUsaha,
+      alamatUsaha,
+      teleponUsaha,
+      emailUsaha,
       startDate: sDate,
       endDate: eDate,
       tanggalCetak,
@@ -288,9 +288,9 @@ export default function ReportPreviewPage() {
 
     // Build Kop Surat Header rows for Excel
     const kopHeader = [
-      [namaKoperasi?.toUpperCase() || "KOPERASI"],
-      [alamatKoperasi || ""],
-      [`Telp: ${teleponKoperasi || "-"} | Email: ${emailKoperasi || "-"}`],
+      [namaUsaha?.toUpperCase() || "USAHA"],
+      [alamatUsaha || ""],
+      [`Telp: ${teleponUsaha || "-"} | Email: ${emailUsaha || "-"}`],
       [""],
       [namaLaporan?.toUpperCase() || "LAPORAN"],
       [periodeText],
@@ -351,7 +351,7 @@ export default function ReportPreviewPage() {
             {originalReportData?.namaLaporan || "Preview Laporan"}
           </h1>
           <p className="text-xs text-muted-foreground">
-            {originalReportData?.namaKoperasi}
+            {originalReportData?.namaUsaha}
           </p>
         </div>
 

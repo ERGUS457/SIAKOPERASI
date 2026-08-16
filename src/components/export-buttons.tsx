@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -73,10 +73,10 @@ export function ExportButtons({ config, label = "Lihat Laporan" }: ExportButtons
         const reportData = {
           namaLaporan: config.namaLaporan,
           filename: config.filename,
-          namaKoperasi: orgInfo?.nama || "",
-          alamatKoperasi: orgInfo?.alamat || "",
-          teleponKoperasi: orgInfo?.telepon || "",
-          emailKoperasi: orgInfo?.email || "",
+          namaUsaha: orgInfo?.nama || "",
+          alamatUsaha: orgInfo?.alamat || "",
+          teleponUsaha: orgInfo?.telepon || "",
+          emailUsaha: orgInfo?.email || "",
           startDate: config.startDate,
           endDate: config.endDate,
           tanggalCetak: new Date().toLocaleString("id-ID"),
