@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -149,7 +149,7 @@ export default function LandingPage() {
             >
               <Link href="/register">
                 <Button size="lg" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/25 px-8 h-12 text-base">
-                  Mulai Sekarang â€” Gratis
+                  Mulai Sekarang - Gratis
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
@@ -386,7 +386,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="w-full border-t py-8 bg-muted/50">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} SIMPEL-KU â€” Sistem Penyusunan Laporan Keuangan Terpadu. All rights reserved.
+          &copy; {new Date().getFullYear()} SIMPEL-KU - Sistem Penyusunan Laporan Keuangan Terpadu. All rights reserved.
         </div>
       </footer>
     </div>
