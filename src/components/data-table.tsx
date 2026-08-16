@@ -69,10 +69,10 @@ export function DataTable<T>({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex w-full flex-1 items-center gap-2">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row w-full flex-1 items-stretch sm:items-center gap-2">
           {searchKey && (
-            <div className="relative w-full max-w-sm">
+            <div className="relative w-full max-w-full sm:max-w-sm">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder={searchPlaceholder}
@@ -81,67 +81,71 @@ export function DataTable<T>({
                   setSearch(e.target.value);
                   setPage(1); // Reset page on search
                 }}
-                className="pl-9 w-full bg-background"
+                className="pl-9 w-full bg-background h-9 text-sm"
               />
             </div>
           )}
-          <ExportButtons
-            config={{
-              namaLaporan: exportFilename.replace(/_/g, " "),
-              filename: exportFilename,
-              columns: columns as any,
-              data: filteredData as any[],
-            }}
-          />
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <ExportButtons
+              config={{
+                namaLaporan: exportFilename.replace(/_/g, " "),
+                filename: exportFilename,
+                columns: columns as any,
+                data: filteredData as any[],
+              }}
+            />
+          </div>
         </div>
         
         {onAdd && (
-          <Button onClick={onAdd} className="w-full sm:w-auto">
+          <Button onClick={onAdd} className="w-full sm:w-auto h-9 text-sm">
             <Plus className="mr-2 h-4 w-4" />
             {addLabel}
           </Button>
         )}
       </div>
 
-      <div className="rounded-md border bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {columns.map((col, index) => (
-                <TableHead key={index}>{col.header}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((item, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {columns.map((col, colIndex) => (
-                    <TableCell key={colIndex}>
-                      {col.cell
-                        ? col.cell(item)
-                        : ((col.accessorKey as string).split('.').reduce((obj: any, key) => obj?.[key], item) as React.ReactNode)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
+      <div className="rounded-md border bg-card overflow-hidden">
+        <div className="overflow-x-auto w-full">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center text-muted-foreground"
-                >
-                  Tidak ada data ditemukan.
-                </TableCell>
+                {columns.map((col, index) => (
+                  <TableHead key={index} className="whitespace-nowrap">{col.header}</TableHead>
+                ))}
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {paginatedData.length > 0 ? (
+                paginatedData.map((item, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {columns.map((col, colIndex) => (
+                      <TableCell key={colIndex} className="whitespace-nowrap">
+                        {col.cell
+                          ? col.cell(item)
+                          : ((col.accessorKey as string).split('.').reduce((obj: any, key) => obj?.[key], item) as React.ReactNode)}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    Tidak ada data ditemukan.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex items-center justify-between px-2">
-        <div className="text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-1 py-1">
+        <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
           Menampilkan {paginatedData.length > 0 ? (page - 1) * itemsPerPage + 1 : 0} -{" "}
           {Math.min(page * itemsPerPage, filteredData.length)} dari{" "}
           {filteredData.length} data
@@ -152,11 +156,12 @@ export function DataTable<T>({
             size="sm"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
+            className="h-8 text-xs px-2.5"
           >
             <ChevronLeft className="h-4 w-4" />
             <span className="sr-only">Previous</span>
           </Button>
-          <div className="text-sm font-medium">
+          <div className="text-xs sm:text-sm font-medium">
             Halaman {page} dari {totalPages}
           </div>
           <Button
@@ -164,6 +169,7 @@ export function DataTable<T>({
             size="sm"
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
+            className="h-8 text-xs px-2.5"
           >
             <ChevronRight className="h-4 w-4" />
             <span className="sr-only">Next</span>

@@ -108,7 +108,7 @@ export default function RegisterPage() {
               <Input id="namaUsaha" name="namaUsaha" required value={formData.namaUsaha} onChange={handleChange} placeholder="Usaha Sejahtera Mandiri" className="h-11" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="alamat">Alamat</Label>
                 <Input id="alamat" name="alamat" value={formData.alamat} onChange={handleChange} placeholder="Jl. Merdeka No. 1" className="h-11" />
@@ -128,7 +128,7 @@ export default function RegisterPage() {
               <Input id="namaAdmin" name="namaAdmin" required value={formData.namaAdmin} onChange={handleChange} placeholder="Nama lengkap admin" className="h-11" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="admin@email.com" className="h-11" />
@@ -139,7 +139,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} placeholder="Masukkan password" className="h-11" />

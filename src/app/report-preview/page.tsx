@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
@@ -345,40 +345,40 @@ export default function ReportPreviewPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       {/* HEADER BAR */}
-      <div className="bg-white border-b px-4 md:px-6 py-3 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm z-10 sticky top-0">
+      <div className="bg-white border-b px-3 sm:px-6 py-2.5 sm:py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3 shadow-xs z-10 sticky top-0">
         <div>
-          <h1 className="text-lg font-bold text-gray-800">
+          <h1 className="text-base sm:text-lg font-bold text-gray-800">
             {originalReportData?.namaLaporan || "Preview Laporan"}
           </h1>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[11px] sm:text-xs text-muted-foreground">
             {originalReportData?.namaUsaha}
           </p>
         </div>
 
         {/* DATE FILTER BAR */}
-        <div className="flex flex-wrap items-center gap-2 bg-gray-50 p-2 rounded-lg border">
-          <div className="flex items-center gap-1.5">
-            <Filter className="h-4 w-4 text-indigo-600" />
-            <span className="text-xs font-semibold text-gray-700">Filter Tanggal:</span>
+        <div className="flex flex-wrap items-center gap-2 bg-gray-50 p-1.5 sm:p-2 rounded-lg border">
+          <div className="flex items-center gap-1">
+            <Filter className="h-3.5 w-3.5 text-indigo-600" />
+            <span className="text-xs font-semibold text-gray-700">Filter:</span>
           </div>
 
           <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground">Dari</span>
+            <span className="text-[11px] text-muted-foreground">Dari</span>
             <Input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="h-8 text-xs w-36 bg-white"
+              className="h-7 sm:h-8 text-xs w-32 sm:w-36 bg-white"
             />
           </div>
 
           <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground">s/d</span>
+            <span className="text-[11px] text-muted-foreground">s/d</span>
             <Input
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="h-8 text-xs w-36 bg-white"
+              className="h-7 sm:h-8 text-xs w-32 sm:w-36 bg-white"
             />
           </div>
 
@@ -387,25 +387,25 @@ export default function ReportPreviewPage() {
               variant="ghost"
               size="sm"
               onClick={handleResetFilter}
-              className="h-8 px-2 text-xs text-gray-600 hover:text-gray-900"
+              className="h-7 sm:h-8 px-2 text-xs text-gray-600 hover:text-gray-900"
               title="Reset Filter Tanggal"
             >
-              <RotateCcw className="h-3.5 w-3.5 mr-1" />
+              <RotateCcw className="h-3 w-3 mr-1" />
               Reset
             </Button>
           )}
         </div>
 
         {/* ACTION BUTTONS */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap sm:flex-nowrap">
           <Button
             variant="outline"
             size="sm"
             onClick={handlePrint}
             disabled={isGenerating || !pdfBlobUrl}
-            className="border-gray-200 text-gray-700"
+            className="border-gray-200 text-gray-700 h-8 text-xs flex-1 sm:flex-initial"
           >
-            <Printer className="mr-1 h-4 w-4" />
+            <Printer className="mr-1 h-3.5 w-3.5" />
             Cetak
           </Button>
           <Button
@@ -413,18 +413,18 @@ export default function ReportPreviewPage() {
             size="sm"
             onClick={handleDownloadExcel}
             disabled={!filteredReportData}
-            className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
+            className="border-green-200 bg-green-50 text-green-700 hover:bg-green-100 h-8 text-xs flex-1 sm:flex-initial"
           >
-            <FileSpreadsheet className="mr-1 h-4 w-4" />
+            <FileSpreadsheet className="mr-1 h-3.5 w-3.5" />
             Excel
           </Button>
           <Button
             size="sm"
             onClick={handleDownloadPDF}
             disabled={isGenerating || !filteredReportData}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white h-8 text-xs flex-1 sm:flex-initial"
           >
-            <Download className="mr-1 h-4 w-4" />
+            <Download className="mr-1 h-3.5 w-3.5" />
             Download PDF
           </Button>
         </div>

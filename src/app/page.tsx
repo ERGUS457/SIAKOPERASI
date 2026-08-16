@@ -109,17 +109,17 @@ export default function LandingPage() {
 
       <main className="flex-1 pt-16">
         {/* Hero */}
-        <section className="relative w-full overflow-hidden py-24 md:py-32 lg:py-40">
+        <section className="relative w-full overflow-hidden py-12 sm:py-20 md:py-32 lg:py-40">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 animated-gradient" />
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/20 rounded-full blur-[100px]" />
           <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-purple-500/20 rounded-full blur-[100px]" />
 
-          <div className="container relative z-10 mx-auto px-4 md:px-6 flex flex-col items-center text-center space-y-8">
+          <div className="container relative z-10 mx-auto px-4 md:px-6 flex flex-col items-center text-center space-y-6 sm:space-y-8">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-sm"
+              className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3.5 py-1 sm:px-4 sm:py-1.5 text-xs sm:text-sm font-medium text-muted-foreground backdrop-blur-sm"
             >
               <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
               Platform Akuntansi Usaha Terbaik
@@ -129,7 +129,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
+              className="max-w-4xl text-3xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl leading-tight sm:leading-tight"
             >
               Kelola Keuangan{" "}
               <span className="gradient-text">Usaha</span> Anda{" "}
@@ -140,7 +140,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="mx-auto max-w-[650px] text-lg text-muted-foreground md:text-xl leading-relaxed"
+              className="mx-auto max-w-[650px] text-sm sm:text-lg text-muted-foreground md:text-xl leading-relaxed"
             >
               Solusi lengkap berbasis web untuk pencatatan akuntansi, manajemen simpan pinjam, dan pelaporan keuangan secara real-time.
             </motion.p>
@@ -149,16 +149,16 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-col sm:flex-row gap-4 pt-4"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4 w-full sm:w-auto max-w-sm sm:max-w-none mx-auto"
             >
-              <Link href="/register">
-                <Button size="lg" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/25 px-8 h-12 text-base">
+              <Link href="/register" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-xl shadow-indigo-500/25 px-6 sm:px-8 h-11 sm:h-12 text-sm sm:text-base">
                   Mulai Sekarang - Gratis
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/login">
-                <Button size="lg" variant="outline" className="h-12 px-8 text-base">
+              <Link href="/login" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full h-11 sm:h-12 px-6 sm:px-8 text-sm sm:text-base">
                   Masuk ke Dashboard
                 </Button>
               </Link>
@@ -168,12 +168,12 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-4 w-full max-w-4xl"
+              className="mt-8 sm:mt-16 grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-4 w-full max-w-4xl"
             >
               {stats.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-3xl font-bold gradient-text">{stat.value}</div>
-                  <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
+                <div key={i} className="text-center p-3 sm:p-4 rounded-xl border bg-card/40 backdrop-blur-xs">
+                  <div className="text-2xl sm:text-3xl font-bold gradient-text">{stat.value}</div>
+                  <div className="mt-1 text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
