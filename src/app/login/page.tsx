@@ -37,9 +37,14 @@ export default function LoginPage() {
         setError('Email atau password salah');
         Swal.fire({ title: "Login Gagal", text: "Email atau password yang Anda masukkan salah.", icon: "error" });
       } else {
-        await Swal.fire({ title: "Login Berhasil", text: "Selamat datang kembali!", icon: "success", timer: 1500, showConfirmButton: false });
-        router.push('/dashboard');
-        router.refresh();
+        Swal.fire({
+          title: "Login Berhasil",
+          text: "Mengarahkan ke Dashboard...",
+          icon: "success",
+          timer: 1000,
+          showConfirmButton: false,
+        });
+        window.location.href = '/dashboard';
       }
     } catch {
       setError('Terjadi kesalahan saat login');
