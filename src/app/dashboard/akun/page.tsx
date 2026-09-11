@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "next-auth";
+import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import AkunClient from "./client";
 
