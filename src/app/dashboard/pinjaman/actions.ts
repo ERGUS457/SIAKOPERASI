@@ -9,8 +9,17 @@ export async function createPinjaman(data: any) {
   const organisasiId = (session as any)?.organisasiId;
   if (!organisasiId) throw new Error("Unauthorized");
 
+  // Validasi input — biar error-nya jelas, bukan Prisma enum crash
+  if (!data.anggotaId) throw new Error("Anggota wajib dipilih");
+  if (!data.jenisPinjaman) throw new Error("Jenis Pinjaman wajib dipilih");
+  if (!["PINJAMAN_REGULER","PINJAMAN_KHUSUS","PINJAMAN_DARURAT"].includes(data.jenisPinjaman)) {
+    throw new Error(`Jenis Pinjaman tidak valid: ${data.jenisPinjaman}. Pilih PINJAMAN_REGULER / KHUSUS / DARURAT`);
+  }
+  if (!data.tanggalPencairan) throw new Error("Tanggal Pencairan wajib diisi");
   const nilaiPinjaman = Number(data.nilaiPinjaman);
   const angsuranBulan = Number(data.angsuranBulan);
+  if (!nilaiPinjaman || nilaiPinjaman <= 0) throw new Error("Nilai Pinjaman harus > 0");
+  if (!angsuranBulan || angsuranBulan <= 0) throw new Error("Tenor (angsuranBulan) harus > 0");
   const nilaiPokokAngsuran = nilaiPinjaman / angsuranBulan;
 
   await prisma.$transaction(async (tx) => {
