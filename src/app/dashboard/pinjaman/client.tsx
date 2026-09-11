@@ -8,8 +8,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Combobox } from "@/components/ui/combobox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createPinjaman, bayarAngsuran, deletePinjaman } from "./actions";
 import { formatRupiah } from "@/lib/utils";
+
+const JENIS_PINJAMAN_OPTIONS = [
+  { label: "Pinjaman Reguler", value: "PINJAMAN_REGULER" },
+  { label: "Pinjaman Khusus", value: "PINJAMAN_KHUSUS" },
+  { label: "Pinjaman Darurat", value: "PINJAMAN_DARURAT" },
+];
 
 export default function PinjamanClient({ data, anggotaList }: { data: any[], anggotaList: any[] }) {
   const [formData, setFormData] = useState<any>({});
@@ -154,12 +161,21 @@ export default function PinjamanClient({ data, anggotaList }: { data: any[], ang
             
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="jenisPinjaman" className="text-right">Jenis Pinjaman</Label>
-              <Input
-                id="jenisPinjaman"
-                value={formData.jenisPinjaman || ''}
-                onChange={(e) => setFormData({ ...formData, jenisPinjaman: e.target.value })}
-                className="col-span-3"
-              />
+              <div className="col-span-3">
+                <Select
+                  value={formData.jenisPinjaman || ''}
+                  onValueChange={(val) => setFormData({ ...formData, jenisPinjaman: val })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Jenis Pinjaman..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {JENIS_PINJAMAN_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             
             <div className="grid grid-cols-4 items-center gap-4">
