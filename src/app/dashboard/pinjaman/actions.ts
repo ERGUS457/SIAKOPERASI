@@ -38,8 +38,8 @@ export async function createPinjaman(data: any) {
 
     // Create journal for disbursement
     const { getOrCreateDefaultAkun } = await import("@/lib/accounting-helper");
-    const akunKas = await getOrCreateDefaultAkun(organisasiId, 'KAS');
-    const akunPiutang = await getOrCreateDefaultAkun(organisasiId, 'PIUTANG_ANGGOTA');
+    const akunKas = await getOrCreateDefaultAkun(organisasiId, 'KAS', tx);
+    const akunPiutang = await getOrCreateDefaultAkun(organisasiId, 'PIUTANG_ANGGOTA', tx);
     const nomorTransaksi = `JU-${new Date().getTime()}-${Math.floor(Math.random() * 1000)}`;
 
     await tx.transaksi.create({
@@ -112,9 +112,9 @@ export async function bayarAngsuran(pinjamanId: string) {
     });
 
     // Create journal for payment
-    const { getOrCreateDefaultAkun } = await import("@/lib/accounting-helper");
-    const akunKas = await getOrCreateDefaultAkun(organisasiId, 'KAS');
-    const akunPiutang = await getOrCreateDefaultAkun(organisasiId, 'PIUTANG_ANGGOTA');
+    const { getOrCreateDefaultAkun: getAkun2 } = await import("@/lib/accounting-helper");
+    const akunKas = await getAkun2(organisasiId, 'KAS', tx);
+    const akunPiutang = await getAkun2(organisasiId, 'PIUTANG_ANGGOTA', tx);
     const nomorTransaksi = `JU-${new Date().getTime()}-${Math.floor(Math.random() * 1000)}`;
 
     await tx.transaksi.create({

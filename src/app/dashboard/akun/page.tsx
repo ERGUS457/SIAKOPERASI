@@ -1,23 +1,22 @@
-import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
+import { auth } from "next-auth";
 import { redirect } from "next/navigation";
 import AkunClient from "./client";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Chart of Accounts | Dashboard",
   description: "Manajemen Chart of Accounts",
 };
-
 export default async function AkunPage() {
-  const session = await auth();
-  if (!session?.organisasiId) {
+  const session = await auth() as any;
+  const organisasiId = session?.organisasiId || session?.user?.organisasiId;
+  if (!organisasiId) {
     redirect("/login");
   }
 
   const akunList = await prisma.akun.findMany({
     where: {
-      organisasiId: session.organisasiId,
+      organisasiId,
     },
     orderBy: {
       kodeAkun: "asc",

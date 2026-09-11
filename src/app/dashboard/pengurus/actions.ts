@@ -4,9 +4,13 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
+function getOrgId(session: any): string | null {
+  return session?.organisasiId || session?.user?.organisasiId || null;
+}
+
 export async function getPengurus() {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
   return prisma.pengurus.findMany({
@@ -23,7 +27,7 @@ export async function createPengurus(data: {
   email?: string;
 }) {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
   await prisma.pengurus.create({
@@ -47,11 +51,14 @@ export async function updatePengurus(
   }
 ) {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
+  const owner = await prisma.pengurus.findFirst({ where: { id, organisasiId } });
+  if (!owner) throw new Error("Data pengurus tidak ditemukan atau bukan milik organisasi Anda");
+
   await prisma.pengurus.update({
-    where: { id, organisasiId },
+    where: { id },
     data,
   });
 
@@ -60,11 +67,14 @@ export async function updatePengurus(
 
 export async function deletePengurus(id: string) {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
+  const owner = await prisma.pengurus.findFirst({ where: { id, organisasiId } });
+  if (!owner) throw new Error("Data pengurus tidak ditemukan atau bukan milik organisasi Anda");
+
   await prisma.pengurus.delete({
-    where: { id, organisasiId },
+    where: { id },
   });
 
   revalidatePath("/dashboard/pengurus");

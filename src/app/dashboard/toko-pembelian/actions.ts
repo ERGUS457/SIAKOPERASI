@@ -4,9 +4,13 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
+function getOrgId(session: any): string | null {
+  return session?.organisasiId || session?.user?.organisasiId || null;
+}
+
 export async function getTokoPembelian() {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
   return prisma.tokoPembelian.findMany({
@@ -22,7 +26,7 @@ export async function createTokoPembelian(data: {
   kontak?: string;
 }) {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
   await prisma.tokoPembelian.create({
@@ -45,11 +49,14 @@ export async function updateTokoPembelian(
   }
 ) {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
+  const owner = await prisma.tokoPembelian.findFirst({ where: { id, organisasiId } });
+  if (!owner) throw new Error("Data toko tidak ditemukan atau bukan milik organisasi Anda");
+
   await prisma.tokoPembelian.update({
-    where: { id, organisasiId },
+    where: { id },
     data,
   });
 
@@ -58,11 +65,14 @@ export async function updateTokoPembelian(
 
 export async function deleteTokoPembelian(id: string) {
   const session = await auth();
-  const organisasiId = (session as any)?.organisasiId;
+  const organisasiId = getOrgId(session);
   if (!organisasiId) throw new Error("Unauthorized");
 
+  const owner = await prisma.tokoPembelian.findFirst({ where: { id, organisasiId } });
+  if (!owner) throw new Error("Data toko tidak ditemukan atau bukan milik organisasi Anda");
+
   await prisma.tokoPembelian.delete({
-    where: { id, organisasiId },
+    where: { id },
   });
 
   revalidatePath("/dashboard/toko-pembelian");

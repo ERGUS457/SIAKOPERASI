@@ -1,7 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { KategoriAkun, SaldoNormal } from "@prisma/client";
 
-export async function getOrCreateDefaultAkun(organisasiId: string, type: 'KAS' | 'SIMPANAN_POKOK' | 'SIMPANAN_WAJIB' | 'SIMPANAN_SUKARELA' | 'PIUTANG_ANGGOTA' | 'PENDAPATAN_BUNGA') {
+export async function getOrCreateDefaultAkun(
+  organisasiId: string,
+  type: 'KAS' | 'SIMPANAN_POKOK' | 'SIMPANAN_WAJIB' | 'SIMPANAN_SUKARELA' | 'PIUTANG_ANGGOTA' | 'PENDAPATAN_BUNGA',
+  tx?: any
+) {
+  const db: any = tx || prisma;
   let searchName = '';
   let defaultKode = '';
   let kategori: KategoriAkun = KategoriAkun.ASET_LANCAR;
@@ -46,8 +51,7 @@ export async function getOrCreateDefaultAkun(organisasiId: string, type: 'KAS' |
       break;
   }
 
-  // Find existing
-  let akun = await prisma.akun.findFirst({
+  let akun = await db.akun.findFirst({
     where: { 
       organisasiId,
       namaAkun: { contains: searchName, mode: 'insensitive' }
@@ -56,9 +60,8 @@ export async function getOrCreateDefaultAkun(organisasiId: string, type: 'KAS' |
 
   if (akun) return akun;
 
-  // Ensure defaultKode is unique, if not, append random
   let uniqueKode = defaultKode;
-  let exists = await prisma.akun.findUnique({
+  let exists = await db.akun.findUnique({
     where: { kodeAkun_organisasiId: { kodeAkun: uniqueKode, organisasiId } }
   });
   
@@ -66,8 +69,7 @@ export async function getOrCreateDefaultAkun(organisasiId: string, type: 'KAS' |
     uniqueKode = `${defaultKode}-${Math.floor(Math.random() * 1000)}`;
   }
 
-  // Create if not exists
-  akun = await prisma.akun.create({
+  akun = await db.akun.create({
     data: {
       kodeAkun: uniqueKode,
       namaAkun: searchName,
