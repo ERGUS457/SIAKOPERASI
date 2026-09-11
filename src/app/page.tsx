@@ -109,7 +109,7 @@ export default function LandingPage() {
 
       <main className="flex-1 pt-16">
         {/* Hero */}
-        <section className="relative w-full overflow-hidden py-12 sm:py-20 md:py-32 lg:py-40">
+        <section className="relative w-full overflow-hidden py-8 sm:py-12 md:py-16 lg:py-20">
           <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-pink-500/10 animated-gradient" />
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-indigo-500/20 rounded-full blur-[100px]" />
           <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-purple-500/20 rounded-full blur-[100px]" />
