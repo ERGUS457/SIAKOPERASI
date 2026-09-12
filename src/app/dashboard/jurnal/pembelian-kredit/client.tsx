@@ -157,10 +157,10 @@ export default function ClientPage({ akunOptions, tokoPembelian, anggota, transa
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-lg border bg-blue-50/50 p-4 dark:bg-blue-950/20 dark:border-blue-900/50">
-                <h4 className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2">Informasi Otomatisasi Jurnal</h4>
-                <p className="text-sm text-blue-600/80 dark:text-blue-300/80">
-                  Sistem akan otomatis mencatat sisi <strong>Kredit</strong> ke akun <strong>Utang Usaha</strong> sebesar total nominal di bawah ini. Anda hanya perlu memasukkan barang/beban apa yang dibeli pada tabel Debit.
+              <div className="rounded-lg border border-blue-300 bg-blue-100 p-4 dark:bg-blue-900/50 dark:border-blue-700">
+                <h4 className="text-sm font-bold text-blue-900 dark:text-blue-100 mb-1.5">Informasi Otomatisasi Jurnal</h4>
+                <p className="text-sm leading-relaxed font-medium text-blue-900 dark:text-blue-50">
+                  Sistem akan otomatis mencatat sisi <strong className="font-extrabold text-blue-950 dark:text-white">Kredit</strong> ke akun <strong className="font-extrabold text-blue-950 dark:text-white">Utang Usaha</strong> sebesar total nominal di bawah ini. Anda hanya perlu memasukkan barang/beban apa yang dibeli pada tabel Debit.
                 </p>
               </div>
 
