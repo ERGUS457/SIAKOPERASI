@@ -187,10 +187,10 @@ export default function ClientPage({ akunOptions, tokoPembelian, tokoPenjualan, 
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 dark:bg-rose-950/40 dark:border-rose-800">
-                <h4 className="text-sm font-semibold text-rose-800 dark:text-rose-300 mb-1.5">Informasi Otomatisasi Jurnal</h4>
-                <p className="text-[13px] leading-relaxed text-rose-900 dark:text-rose-200/90">
-                  Sistem akan otomatis mencatat sisi <strong className="font-bold text-rose-950 dark:text-rose-200">Kredit</strong> (mengurangi) ke Akun Sumber (Kas/Bank) yang Anda pilih di atas sebesar total nominal di bawah ini. Anda hanya perlu memasukkan rincian tujuan pembayaran pada tabel Debit (contoh: Beban, Utang Usaha).
+              <div className="rounded-lg border border-rose-300 bg-rose-100 p-4 dark:bg-rose-900/50 dark:border-rose-700">
+                <h4 className="text-sm font-bold text-rose-900 dark:text-rose-100 mb-1.5">Informasi Otomatisasi Jurnal</h4>
+                <p className="text-sm leading-relaxed font-medium text-rose-900 dark:text-rose-50">
+                  Sistem akan otomatis mencatat sisi <strong className="font-extrabold text-rose-950 dark:text-white">Kredit</strong> (mengurangi) ke Akun Sumber (Kas/Bank) yang Anda pilih di atas sebesar total nominal di bawah ini. Anda hanya perlu memasukkan rincian tujuan pembayaran pada tabel Debit (contoh: Beban, Utang Usaha).
                 </p>
               </div>
 
